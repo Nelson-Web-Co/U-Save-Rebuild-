@@ -127,18 +127,18 @@
   // with transparent background, composited with U-Save's own tire photo).
   // More will be added as clean source images come in.
   const wheels = [
-    { brand: "Konig", name: "Dekagram", spec: "18\" · Gunmetal", img: "dekagram.png" },
-    { brand: "Konig", name: "F1M", spec: "18\" · Black", img: "f1m_black.png" },
-    { brand: "Konig", name: "F1M", spec: "18\" · Silver", img: "f1m_silver.png" },
-    { brand: "Konig", name: "F3S", spec: "18\" · Gunmetal", img: "f3s.png" },
-    { brand: "Konig", name: "F5R", spec: "18\" · Bronze", img: "f5r_bronze.png" },
-    { brand: "Konig", name: "F5R", spec: "18\" · Gunmetal", img: "f5r_gunmetal.png" },
-    { brand: "Konig", name: "F6SX", spec: "18\" · Bronze", img: "f6sx_bronze.png" },
-    { brand: "Konig", name: "Hyperspec", spec: "18\" · Bronze", img: "hyperspec_bronze.png" },
-    { brand: "Konig", name: "Hyperspec", spec: "18\" · Carbon Machined", img: "hyperspec_carbmach.png" },
-    { brand: "Konig", name: "Rennform", spec: "18\" · Matte Grey", img: "rennform.png" },
-    { brand: "Konig", name: "Neoform", spec: "18\" · Gunmetal", img: "neoform.png" },
-    { brand: "Konig", name: "Octrix", spec: "18\" · Gunmetal", img: "octrix.png" },
+    { brand: "Konig", name: "Dekagram", spec: "18\" · Gunmetal", img: "dekagram.png", thumb: "dekagram_rim.png" },
+    { brand: "Konig", name: "F1M", spec: "18\" · Black", img: "f1m_black.png", thumb: "f1m_black_rim.png" },
+    { brand: "Konig", name: "F1M", spec: "18\" · Silver", img: "f1m_silver.png", thumb: "f1m_silver_rim.png" },
+    { brand: "Konig", name: "F3S", spec: "18\" · Gunmetal", img: "f3s.png", thumb: "f3s_rim.png" },
+    { brand: "Konig", name: "F5R", spec: "18\" · Bronze", img: "f5r_bronze.png", thumb: "f5r_bronze_rim.png" },
+    { brand: "Konig", name: "F5R", spec: "18\" · Gunmetal", img: "f5r_gunmetal.png", thumb: "f5r_gunmetal_rim.png" },
+    { brand: "Konig", name: "F6SX", spec: "18\" · Bronze", img: "f6sx_bronze.png", thumb: "f6sx_bronze_rim.png" },
+    { brand: "Konig", name: "Hyperspec", spec: "18\" · Bronze", img: "hyperspec_bronze.png", thumb: "hyperspec_bronze_rim.png" },
+    { brand: "Konig", name: "Hyperspec", spec: "18\" · Carbon Machined", img: "hyperspec_carbmach.png", thumb: "hyperspec_carbmach_rim.png" },
+    { brand: "Konig", name: "Rennform", spec: "18\" · Matte Grey", img: "rennform.png", thumb: "rennform_rim.png" },
+    { brand: "Konig", name: "Neoform", spec: "18\" · Gunmetal", img: "neoform.png", thumb: "neoform_rim.png" },
+    { brand: "Konig", name: "Octrix", spec: "18\" · Gunmetal", img: "octrix.png", thumb: "octrix_rim.png" },
   ];
 
   const grid = document.getElementById('wheelGrid');
@@ -152,7 +152,7 @@
         const card = document.createElement('div');
         card.className = 'wheel-card';
         card.innerHTML = `
-          <div class="wheel-photo"><img src="${w.img}" alt="${w.brand} ${w.name}"></div>
+          <div class="wheel-photo"><img src="${w.thumb}" alt="${w.brand} ${w.name}"></div>
           <div class="wheel-info">
             <div class="wheel-brand">${w.brand}</div>
             <div class="wheel-name">${w.name}</div>

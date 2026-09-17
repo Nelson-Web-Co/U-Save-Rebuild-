@@ -317,18 +317,18 @@
 
   // Available wheel styles — more added as clean photos are sourced
   const wheelStyles = [
-    { brand: "Konig", collection: "Dekagram", finish: "Gunmetal", img: "dekagram.png" },
-    { brand: "Konig", collection: "F1M", finish: "Black", img: "f1m_black.png" },
-    { brand: "Konig", collection: "F1M", finish: "Silver", img: "f1m_silver.png" },
-    { brand: "Konig", collection: "F3S", finish: "Gunmetal", img: "f3s.png" },
-    { brand: "Konig", collection: "F5R", finish: "Bronze", img: "f5r_bronze.png" },
-    { brand: "Konig", collection: "F5R", finish: "Gunmetal", img: "f5r_gunmetal.png" },
-    { brand: "Konig", collection: "F6SX", finish: "Bronze", img: "f6sx_bronze.png" },
-    { brand: "Konig", collection: "Hyperspec", finish: "Bronze", img: "hyperspec_bronze.png" },
-    { brand: "Konig", collection: "Hyperspec", finish: "Carbon Machined", img: "hyperspec_carbmach.png" },
-    { brand: "Konig", collection: "Rennform", finish: "Matte Grey", img: "rennform.png" },
-    { brand: "Konig", collection: "Neoform", finish: "Gunmetal", img: "neoform.png" },
-    { brand: "Konig", collection: "Octrix", finish: "Gunmetal", img: "octrix.png" },
+    { brand: "Konig", collection: "Dekagram", finish: "Gunmetal", img: "dekagram.png", thumb: "dekagram_rim.png" },
+    { brand: "Konig", collection: "F1M", finish: "Black", img: "f1m_black.png", thumb: "f1m_black_rim.png" },
+    { brand: "Konig", collection: "F1M", finish: "Silver", img: "f1m_silver.png", thumb: "f1m_silver_rim.png" },
+    { brand: "Konig", collection: "F3S", finish: "Gunmetal", img: "f3s.png", thumb: "f3s_rim.png" },
+    { brand: "Konig", collection: "F5R", finish: "Bronze", img: "f5r_bronze.png", thumb: "f5r_bronze_rim.png" },
+    { brand: "Konig", collection: "F5R", finish: "Gunmetal", img: "f5r_gunmetal.png", thumb: "f5r_gunmetal_rim.png" },
+    { brand: "Konig", collection: "F6SX", finish: "Bronze", img: "f6sx_bronze.png", thumb: "f6sx_bronze_rim.png" },
+    { brand: "Konig", collection: "Hyperspec", finish: "Bronze", img: "hyperspec_bronze.png", thumb: "hyperspec_bronze_rim.png" },
+    { brand: "Konig", collection: "Hyperspec", finish: "Carbon Machined", img: "hyperspec_carbmach.png", thumb: "hyperspec_carbmach_rim.png" },
+    { brand: "Konig", collection: "Rennform", finish: "Matte Grey", img: "rennform.png", thumb: "rennform_rim.png" },
+    { brand: "Konig", collection: "Neoform", finish: "Gunmetal", img: "neoform.png", thumb: "neoform_rim.png" },
+    { brand: "Konig", collection: "Octrix", finish: "Gunmetal", img: "octrix.png", thumb: "octrix_rim.png" },
   ];
 
   let selectedStyle = 'dekagram.png';
@@ -592,7 +592,7 @@
       card.className = 'wheel-card' + (w.img === selectedStyle ? ' active' : '');
       card.dataset.wheel = w.img;
       card.innerHTML = `
-        <div class="card-photo"><img src="${w.img}"></div>
+        <div class="card-photo"><img src="${w.thumb}"></div>
         <div class="card-brand">${w.collection}</div>
         <div class="card-collection">${w.brand} Wheels</div>
         <div class="card-finish">${w.finish}</div>
