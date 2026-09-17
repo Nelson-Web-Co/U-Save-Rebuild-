@@ -25,11 +25,25 @@
   a{color:inherit;}
   .wrap{max-width:1160px;margin:0 auto;padding:0 28px;}
 
-  header.site-nav{background:var(--charcoal);padding:0;}
-  .nav-inner{max-width:1160px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
-  .nav-inner .brand{color:#fff;font-family:'Archivo Black',sans-serif;font-size:15px;text-transform:uppercase;}
-  .nav-inner .brand span{color:var(--orange);}
-  .back-link{color:#c4c0b8;font-size:13.5px;text-decoration:none;display:flex;align-items:center;gap:6px;}
+  header.site-nav{
+    position:relative;overflow:hidden;background:var(--charcoal);color:#fff;
+    padding:44px 20px 36px;text-align:center;
+  }
+  header.site-nav::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg, var(--orange), #ffab7a, var(--orange));
+  }
+  header.site-nav::after{
+    content:'';position:absolute;right:-70px;top:50%;transform:translateY(-50%);
+    width:320px;height:320px;background:url('dekagram.png') center/contain no-repeat;
+    opacity:.12;pointer-events:none;
+  }
+  header.site-nav .logo{position:relative;max-width:440px;width:88%;height:auto;margin-bottom:8px;}
+  header.site-nav .tagline{position:relative;font-size:12.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c9c5ba;}
+  header.site-nav .back-link{
+    position:relative;display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+    color:#c4c0b8;font-size:13px;text-decoration:none;
+  }
 
   .page-head{padding:50px 0 30px;text-align:center;}
   .page-head .eyebrow{color:var(--orange);font-weight:700;font-size:13px;letter-spacing:.4px;margin-bottom:10px;}
@@ -87,10 +101,9 @@
 <body>
 
 <header class="site-nav">
-  <div class="nav-inner">
-    <div class="brand">U-<span>SAVE</span> TYRE CO.</div>
-    <a href="index.html" class="back-link">← Back to site</a>
-  </div>
+  <img class="logo" src="usave_logo.png" alt="U-Save Tyre Co">
+  <div class="tagline">Mag Wheels</div>
+  <a href="/index.html" class="back-link">← Back to site</a>
 </header>
 
 <div class="wrap">
