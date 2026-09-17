@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mag Wheels | U-Save Tyre Co</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#0F0E0D;
+    --concrete:#F4F2ED;
+    --orange:#F2622A;
+    --white:#FFFFFF;
+    --tread:#8C887F;
+    --line:#D8D4CA;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:var(--concrete);color:var(--charcoal);
+    font-family:'Barlow',Arial,sans-serif;line-height:1.5;
+  }
+  .display{font-family:'Archivo Black',sans-serif;text-transform:uppercase;line-height:1.05;}
+  a{color:inherit;}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px;}
+
+  header.site-nav{background:var(--charcoal);padding:0;}
+  .nav-inner{max-width:1160px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+  .nav-inner .brand{color:#fff;font-family:'Archivo Black',sans-serif;font-size:15px;text-transform:uppercase;}
+  .nav-inner .brand span{color:var(--orange);}
+  .back-link{color:#c4c0b8;font-size:13.5px;text-decoration:none;display:flex;align-items:center;gap:6px;}
+
+  .page-head{padding:50px 0 30px;text-align:center;}
+  .page-head .eyebrow{color:var(--orange);font-weight:700;font-size:13px;letter-spacing:.4px;margin-bottom:10px;}
+  .page-head h1{font-size:clamp(30px,4.5vw,46px);margin-bottom:14px;}
+  .page-head p{color:#5b5850;font-size:15.5px;max-width:520px;margin:0 auto;}
+
+  .filter-bar{
+    display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+    padding:0 0 40px;
+  }
+  .filter-chip{
+    background:var(--white);border:1.5px solid var(--line);border-radius:999px;
+    padding:8px 18px;font-size:13.5px;font-weight:600;cursor:pointer;
+    transition:all .15s;
+  }
+  .filter-chip:hover{border-color:var(--orange);}
+  .filter-chip.active{background:var(--charcoal);color:#fff;border-color:var(--charcoal);}
+
+  .wheel-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:24px;padding-bottom:80px;
+  }
+  .wheel-card{
+    background:var(--white);border:1px solid var(--line);border-radius:10px;
+    overflow:hidden;transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .wheel-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px rgba(15,14,13,.1);}
+  .wheel-photo{
+    aspect-ratio:1;background:var(--white);display:flex;align-items:center;justify-content:center;
+    padding:12px;
+  }
+  .wheel-photo img{width:92%;height:92%;object-fit:contain;}
+  .wheel-info{padding:18px 20px 20px;}
+  .wheel-brand{color:var(--orange);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+  .wheel-name{font-size:17px;font-weight:700;margin-bottom:6px;}
+  .wheel-spec{color:var(--tread);font-size:13px;margin-bottom:16px;}
+  .try-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--orange);color:#fff;border:none;border-radius:6px;
+    width:100%;padding:11px;font-size:13.5px;font-weight:700;cursor:pointer;
+    text-decoration:none;transition:background .15s;
+  }
+  .try-btn:hover{background:#d9531f;}
+  .try-btn svg{width:16px;height:16px;}
+
+  footer{background:var(--charcoal);color:#a8a49a;text-align:center;padding:30px;font-size:12.5px;}
+
+  @media(max-width:700px){
+    .page-head{padding:36px 0 24px;}
+    .wheel-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
+    .wheel-photo{padding:16px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="brand">U-<span>SAVE</span> TYRE CO.</div>
+    <a href="index.html" class="back-link">← Back to site</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="eyebrow">Mag Wheels</div>
+    <h1 class="display">Find your style</h1>
+    <p>Browse our full range of mag wheels. Tap "Try On Your Car" on any style to see it on your actual vehicle.</p>
+  </div>
+
+  <p style="text-align:center;color:var(--tread);font-size:13px;margin:0 0 30px;">Starting fresh with clean, confirmed-good photos — more styles added as they're sourced</p>
+
+  <div class="wheel-grid" id="wheelGrid">
+    <!-- cards injected by JS from the wheels array below -->
+  </div>
+</div>
+
+<footer>U-Save Tyre Co. · 46 St Vincent Street, Nelson · 03 548 2077</footer>
+
+<script>
+  // Starting fresh with one confirmed-clean wheel photo (real Konig product photo
+  // with transparent background, composited with U-Save's own tire photo).
+  // More will be added as clean source images come in.
+  const wheels = [
+    { brand: "Konig", name: "Dekagram", spec: "18\" · Gunmetal", img: "dekagram.png" },
+    { brand: "Konig", name: "F1M", spec: "18\" · Black", img: "f1m_black.png" },
+    { brand: "Konig", name: "F1M", spec: "18\" · Silver", img: "f1m_silver.png" },
+    { brand: "Konig", name: "F3S", spec: "18\" · Gunmetal", img: "f3s.png" },
+    { brand: "Konig", name: "F5R", spec: "18\" · Bronze", img: "f5r_bronze.png" },
+    { brand: "Konig", name: "F5R", spec: "18\" · Gunmetal", img: "f5r_gunmetal.png" },
+    { brand: "Konig", name: "F6SX", spec: "18\" · Bronze", img: "f6sx_bronze.png" },
+    { brand: "Konig", name: "Hyperspec", spec: "18\" · Bronze", img: "hyperspec_bronze.png" },
+    { brand: "Konig", name: "Hyperspec", spec: "18\" · Carbon Machined", img: "hyperspec_carbmach.png" },
+    { brand: "Konig", name: "Rennform", spec: "18\" · Matte Grey", img: "rennform.png" },
+    { brand: "Konig", name: "Neoform", spec: "18\" · Gunmetal", img: "neoform.png" },
+    { brand: "Konig", name: "Octrix", spec: "18\" · Gunmetal", img: "octrix.png" },
+  ];
+
+  const grid = document.getElementById('wheelGrid');
+  let activeBrand = 'all';
+
+  function render() {
+    grid.innerHTML = '';
+    wheels
+      .filter(w => activeBrand === 'all' || w.brand === activeBrand)
+      .forEach(w => {
+        const card = document.createElement('div');
+        card.className = 'wheel-card';
+        card.innerHTML = `
+          <div class="wheel-photo"><img src="${w.img}" alt="${w.brand} ${w.name}"></div>
+          <div class="wheel-info">
+            <div class="wheel-brand">${w.brand}</div>
+            <div class="wheel-name">${w.name}</div>
+            <div class="wheel-spec">${w.spec}</div>
+            <a class="try-btn" href="/usave-wheel-visualiser/index.html?wheel=${encodeURIComponent(w.img)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+              Try On Your Car
+            </a>
+          </div>`;
+        grid.appendChild(card);
+      });
+  }
+
+  render();
+</script>
+
+</body>
+</html>

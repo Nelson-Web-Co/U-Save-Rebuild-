@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test My Ride — U-Save Tyre Co</title>
+<style>
+  :root{
+    --charcoal:#0F0E0D;
+    --concrete:#F4F2ED;
+    --orange:#F2622A;
+    --white:#FFFFFF;
+    --line:#D8D4CA;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    background:
+      repeating-linear-gradient(135deg, rgba(15,14,13,.028) 0px, rgba(15,14,13,.028) 1px, transparent 1px, transparent 14px),
+      var(--concrete);
+    color:var(--charcoal);
+    font-family:'Barlow',Arial,sans-serif;line-height:1.5;
+    min-height:100vh;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px;}
+
+  header{
+    position:relative;overflow:hidden;background:var(--charcoal);color:#fff;
+    padding:44px 20px 36px;text-align:center;
+  }
+  header::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg, var(--orange), #ffab7a, var(--orange));
+  }
+  header::after{
+    content:'';position:absolute;right:-70px;top:50%;transform:translateY(-50%);
+    width:320px;height:320px;background:url('dekagram.png') center/contain no-repeat;
+    opacity:.12;pointer-events:none;
+  }
+  header .eyebrow{
+    position:relative;font-size:12px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
+    color:var(--orange);margin-bottom:8px;
+  }
+  header h1{position:relative;font-size:24px;font-weight:900;text-transform:uppercase;letter-spacing:.3px;}
+  header .logo{position:relative;max-width:440px;width:88%;height:auto;margin-bottom:8px;}
+  header .tagline{position:relative;font-size:12.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c9c5ba;}
+
+  .intro{padding:28px 0 20px;text-align:center;}
+  .intro h2{font-size:24px;margin-bottom:8px;}
+  .intro p{color:#5b5850;font-size:14.5px;max-width:480px;margin:0 auto;}
+
+  .stage{
+    position:relative;width:100%;aspect-ratio:16/9;
+    background:#1a1a1a url('car-placeholder.jpg') center 38%/cover no-repeat;
+    border-radius:8px;overflow:hidden;
+    touch-action:none;cursor:grab;
+    box-shadow:0 12px 32px rgba(0,0,0,.25);
+  }
+  .stage.dragging{cursor:grabbing;}
+
+  .stage-photo{
+    position:absolute;top:50%;left:50%;
+    transform-origin:center center;
+    max-width:none;
+    user-select:none;-webkit-user-drag:none;pointer-events:none;
+  }
+
+  .stage-empty{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;text-align:center;padding:20px;gap:14px;
+    background:linear-gradient(180deg, rgba(10,10,10,.55), rgba(10,10,10,.72));
+  }
+  .stage-empty svg{width:40px;height:40px;opacity:.85;}
+  .stage-empty .tip{font-size:12px;color:#c9c9c9;max-width:280px;}
+  .upload-btn{
+    background:var(--orange);color:#fff;border:none;padding:13px 26px;border-radius:4px;
+    font-size:14.5px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;
+  }
+
+  .wheel-item{
+    position:absolute;touch-action:none;cursor:move;
+  }
+  .wheel-shadow{
+    position:absolute;left:50%;bottom:2%;transform:translateX(-50%);
+    width:80%;height:16%;border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse at center, rgba(0,0,0,.55) 0%, rgba(0,0,0,.28) 45%, rgba(0,0,0,0) 75%);
+  }
+  .wheel-backing{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:74%;height:74%;border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle at 50% 42%, #2b2b2b 0%, #141414 55%, #050505 100%);
+    box-shadow:inset 0 0 14px rgba(0,0,0,.85);
+  }
+  .wheel-item img{
+    position:relative;z-index:2;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;
+    filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));
+  }
+  .wheel-item.selected{outline:2px dashed rgba(255,255,255,.85);outline-offset:4px;border-radius:50%;}
+
+  .resize-handle{
+    position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;z-index:3;
+    background:var(--orange);border:3px solid #fff;border-radius:50%;
+    cursor:nwse-resize;touch-action:none;display:none;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+  .wheel-item.selected .resize-handle{display:block;}
+
+  .delete-handle{
+    position:absolute;left:-6px;top:-6px;width:22px;height:22px;z-index:3;
+    background:#333;border:3px solid #fff;border-radius:50%;
+    cursor:pointer;touch-action:none;display:none;
+    align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:900;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+  .wheel-item.selected .delete-handle{display:flex;}
+
+  .controls{padding:18px 0;display:flex;flex-direction:column;gap:16px;}
+  .hint{text-align:center;color:#5b5850;font-size:13.5px;}
+
+  .carousel-wrap{position:relative;display:none;align-items:center;gap:8px;}
+  .carousel-arrow{
+    flex-shrink:0;width:36px;height:64px;background:var(--charcoal);color:#fff;border:none;
+    border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;
+    transition:background .15s;
+  }
+  .carousel-arrow:hover{background:#2a2926;}
+  .carousel-track{
+    display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;padding:4px 2px 8px;
+    scrollbar-width:thin;
+  }
+  .wheel-card{
+    flex-shrink:0;width:150px;background:var(--white);border:2px solid var(--line);border-radius:8px;
+    padding:12px;text-align:center;transition:border-color .15s;
+  }
+  .wheel-card.active{border-color:var(--orange);}
+  .wheel-card .card-photo{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+  .wheel-card .card-photo img{width:100%;height:100%;object-fit:contain;}
+  .wheel-card .card-brand{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;}
+  .wheel-card .card-collection{font-size:11px;color:var(--tread);margin-top:2px;}
+  .wheel-card .card-finish{font-size:11px;color:var(--tread);margin-bottom:10px;}
+  .apply-btn{
+    width:100%;background:var(--concrete);border:1px solid var(--line);border-radius:4px;
+    padding:8px 4px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;
+  }
+  .apply-btn:hover{background:#e8e4da;}
+  .wheel-card.active .apply-btn{background:var(--orange);color:#fff;border-color:var(--orange);}
+
+  .add-wheel-btn{
+    flex-shrink:0;width:150px;background:var(--charcoal);color:#fff;border:none;border-radius:8px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    font-size:13px;font-weight:700;cursor:pointer;
+  }
+  .add-wheel-btn .plus{font-size:28px;font-weight:400;line-height:1;}
+
+  .action-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    padding:13px 22px;border-radius:4px;font-size:14px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.3px;border:none;cursor:pointer;
+  }
+  .btn-primary{background:var(--orange);color:#fff;}
+  .btn-secondary{background:transparent;color:var(--charcoal);border:2px solid var(--line);}
+
+  input[type=file]{display:none;}
+
+  .guide{padding:0 0 32px;}
+  .guide h3{
+    font-family:'Archivo Black',Arial,sans-serif;font-size:15px;text-transform:uppercase;
+    letter-spacing:.3px;margin-bottom:10px;color:var(--charcoal);display:flex;align-items:center;gap:8px;
+  }
+  .guide h3 svg{width:17px;height:17px;color:var(--orange);flex-shrink:0;}
+  .guide-before{
+    background:var(--concrete);border:1px solid var(--line);border-radius:8px;
+    padding:16px 18px;margin-bottom:16px;
+  }
+  .guide-before p{font-size:13.5px;color:#5b5850;}
+  .guide ol{list-style:none;counter-reset:steps;display:flex;flex-direction:column;gap:10px;}
+  .guide ol li{
+    counter-increment:steps;font-size:13.5px;color:#5b5850;display:flex;gap:10px;align-items:flex-start;
+  }
+  .guide ol li::before{
+    content:counter(steps);flex-shrink:0;width:22px;height:22px;border-radius:50%;
+    background:var(--charcoal);color:#fff;font-size:12px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .guide ol li svg{width:16px;height:16px;flex-shrink:0;color:var(--orange);margin-top:2px;}
+  .guide ol li b{color:var(--charcoal);}
+  .guide-toggle{
+    display:block;margin:0 auto 4px;background:none;border:none;color:var(--charcoal);
+    font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px;
+  }
+
+  .brightness-row{
+    display:flex;align-items:center;gap:10px;font-size:12.5px;color:#5b5850;
+  }
+  .brightness-row svg{width:16px;height:16px;flex-shrink:0;opacity:.7;}
+  .brightness-row input[type=range]{
+    display:block;flex:1;accent-color:var(--orange);
+  }
+
+  .brand-row{display:none;gap:8px;flex-wrap:wrap;justify-content:center;}
+  .brand-pill{
+    background:var(--white);border:2px solid var(--line);border-radius:20px;
+    padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.3px;transition:border-color .15s,background .15s;
+  }
+  .brand-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+
+  .preselect-banner{
+    background:#fff4ee;border:1.5px solid var(--orange);border-radius:8px;
+    padding:12px 16px;margin-bottom:20px;text-align:center;font-size:13.5px;color:var(--charcoal);
+  }
+  .preselect-banner b{color:var(--orange);}
+
+  footer{
+    position:relative;overflow:hidden;background:var(--charcoal);color:#9a968c;
+    text-align:center;padding:28px 20px 26px;margin-top:44px;font-size:12.5px;
+  }
+  footer::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg, var(--orange), #ffab7a, var(--orange));
+  }
+  footer .credit{margin-top:10px;font-size:12px;color:#fff;}
+</style>
+</head>
+<body>
+
+<header><img class="logo" src="usave_logo.png" alt="U-Save Tyre Co"><div class="tagline">Test My Ride</div></header>
+
+<div class="wrap">
+  <div class="intro">
+    <h2>Try these wheels on your car</h2>
+    <p>Upload a photo of your car, then add as many wheels as you need. Drag to move, use the orange handle to resize.</p>
+  </div>
+
+  <div class="preselect-banner" id="preselectBanner" style="display:none;"></div>
+
+  <button class="guide-toggle" id="guideToggle">Hide instructions</button>
+  <div class="guide" id="guide">
+    <div class="guide-before">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg> Before you get started</h3>
+      <p>Take a side-profile photo of your car in bright, even lighting, with the camera at wheel height and lined up with the middle of the wheel — this gives the best result.</p>
+    </div>
+    <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> How to get started</h3>
+    <ol>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span><b>Upload your photo</b> — a side-on shot of your car works best.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v4M12 17v4M21 12h-4M7 12H3"/></svg><span>Click <b>Add Wheel</b>, pick a style from the carousel, then hit <b>Apply this style</b>.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M19 9l3 3-3 3M9 5l3-3 3 3M9 19l3 3 3-3"/><path d="M2 12h20M12 2v20"/></svg><span><b>Drag and resize</b> the wheel to match an existing wheel in your photo. Click <b>Add Wheel</b> again for each wheel you want covered. You can also drag or scroll/pinch on the photo itself to reposition or zoom it.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Not happy with the lighting in your photo? Use the <b>brightness slider</b> to even it out.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v13M7 11l5 5 5-5"/><path d="M4 19h16"/></svg><span>Click <b>Save My Look</b> to download an image of your new wheel setup.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 0 1-8.8 8.4 8.5 8.5 0 0 1-4-1L3 20l1.1-5.3a8.4 8.4 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5z"/></svg><span>Like what you see? Get in touch with the team to talk specifics.</span></li>
+    </ol>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="stage-empty" id="stageEmpty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <div>Upload a photo of your car to get started</div>
+      <button class="upload-btn" id="uploadBtnEmpty">Upload Photo</button>
+      <div class="tip">For best results, use a bright photo taken in daylight</div>
+    </div>
+    <img class="stage-photo" id="stagePhoto" style="display:none;">
+    <!-- wheel-item divs get added here dynamically -->
+  </div>
+
+  <div class="controls">
+    <div class="hint" id="hint" style="display:none;">Drag a wheel to move it, the orange dot to resize, or the dark dot to remove it. Not lined up right? Drag empty space to reposition the photo, or scroll/pinch to zoom.</div>
+
+    <div class="brightness-row" id="brightnessRow" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <input type="range" id="brightnessSlider" min="60" max="150" value="100">
+    </div>
+
+    <div class="brand-row" id="brandRow"></div>
+
+    <div class="carousel-wrap" id="carouselWrap">
+      <button class="carousel-arrow" id="scrollLeft">&#8249;</button>
+      <div class="carousel-track" id="carouselTrack"></div>
+      <button class="carousel-arrow" id="scrollRight">&#8250;</button>
+    </div>
+
+    <div class="action-row" id="actionRow" style="display:none;">
+      <button class="btn btn-secondary" id="resetBtn">Upload Different Photo</button>
+      <button class="btn btn-primary" id="saveBtn">Save My Look</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept="image/*">
+
+<footer>Demo build — starting fresh with confirmed-clean real product photos. More wheel styles added as they're sourced.<div class="credit">Website designed and created by NelsonWebCo</div></footer>
+
+<script>
+  const stage = document.getElementById('stage');
+  const stageEmpty = document.getElementById('stageEmpty');
+  const stagePhoto = document.getElementById('stagePhoto');
+  const fileInput = document.getElementById('fileInput');
+  const uploadBtnEmpty = document.getElementById('uploadBtnEmpty');
+  const hint = document.getElementById('hint');
+  const carouselWrap = document.getElementById('carouselWrap');
+  const carouselTrack = document.getElementById('carouselTrack');
+  const brandRow = document.getElementById('brandRow');
+  const scrollLeftBtn = document.getElementById('scrollLeft');
+  const scrollRightBtn = document.getElementById('scrollRight');
+  const actionRow = document.getElementById('actionRow');
+  const resetBtn = document.getElementById('resetBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const brightnessRow = document.getElementById('brightnessRow');
+  const brightnessSlider = document.getElementById('brightnessSlider');
+  const guide = document.getElementById('guide');
+  const guideToggle = document.getElementById('guideToggle');
+
+  guideToggle.addEventListener('click', () => {
+    const hidden = guide.style.display === 'none';
+    guide.style.display = hidden ? 'block' : 'none';
+    guideToggle.textContent = hidden ? 'Hide instructions' : 'Show instructions';
+  });
+
+  // Available wheel styles — more added as clean photos are sourced
+  const wheelStyles = [
+    { brand: "Konig", collection: "Dekagram", finish: "Gunmetal", img: "dekagram.png" },
+    { brand: "Konig", collection: "F1M", finish: "Black", img: "f1m_black.png" },
+    { brand: "Konig", collection: "F1M", finish: "Silver", img: "f1m_silver.png" },
+    { brand: "Konig", collection: "F3S", finish: "Gunmetal", img: "f3s.png" },
+    { brand: "Konig", collection: "F5R", finish: "Bronze", img: "f5r_bronze.png" },
+    { brand: "Konig", collection: "F5R", finish: "Gunmetal", img: "f5r_gunmetal.png" },
+    { brand: "Konig", collection: "F6SX", finish: "Bronze", img: "f6sx_bronze.png" },
+    { brand: "Konig", collection: "Hyperspec", finish: "Bronze", img: "hyperspec_bronze.png" },
+    { brand: "Konig", collection: "Hyperspec", finish: "Carbon Machined", img: "hyperspec_carbmach.png" },
+    { brand: "Konig", collection: "Rennform", finish: "Matte Grey", img: "rennform.png" },
+    { brand: "Konig", collection: "Neoform", finish: "Gunmetal", img: "neoform.png" },
+    { brand: "Konig", collection: "Octrix", finish: "Gunmetal", img: "octrix.png" },
+  ];
+
+  let selectedStyle = 'dekagram.png';
+  const brands = [...new Set(wheelStyles.map(w => w.brand))];
+  let selectedBrand = brands[0];
+
+  // If arriving from the catalogue with ?wheel=filename.png, preselect that style/brand
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedWheel = urlParams.get('wheel');
+  const requestedMatch = requestedWheel ? wheelStyles.find(w => w.img === requestedWheel) : null;
+  if (requestedMatch) {
+    selectedStyle = requestedMatch.img;
+    selectedBrand = requestedMatch.brand;
+  }
+
+  const preselectBanner = document.getElementById('preselectBanner');
+  if (requestedMatch) {
+    preselectBanner.style.display = 'block';
+    preselectBanner.innerHTML = `You picked <b>${requestedMatch.brand} ${requestedMatch.collection} (${requestedMatch.finish})</b> — upload a photo of your car below to see it applied.`;
+  }
+
+  let hasPhoto = false;
+  let placedWheels = [];     // {id, el, x, y, size, style}  x/y = center in px relative to stage, size = px
+  let nextId = 1;
+  let selectedWheelId = null;
+  let photoDragging = false, photoStartX = 0, photoStartY = 0;
+  let ptx = 0, pty = 0, pscale = 1;
+  let pinchStartDist = 0, pinchStartScale = 1;
+
+  uploadBtnEmpty.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      stagePhoto.src = ev.target.result;
+      stagePhoto.onload = () => {
+        const stageRect = stage.getBoundingClientRect();
+        const scaleX = stageRect.width / stagePhoto.naturalWidth;
+        const scaleY = stageRect.height / stagePhoto.naturalHeight;
+        pscale = Math.max(scaleX, scaleY);
+        ptx = 0; pty = 0;
+        applyPhotoTransform();
+      };
+      stageEmpty.style.display = 'none';
+      stagePhoto.style.display = 'block';
+      hasPhoto = true;
+
+      // clear any existing wheels, add two starter wheels (front/rear-ish default spots)
+      placedWheels.forEach(w => w.el.remove());
+      placedWheels = [];
+      const stageRect = stage.getBoundingClientRect();
+      addWheel(stageRect.width * 0.38, stageRect.height * 0.52, stageRect.width * 0.16);
+      addWheel(stageRect.width * 0.76, stageRect.height * 0.52, stageRect.width * 0.16);
+
+      hint.style.display = 'block';
+      carouselWrap.style.display = 'flex';
+      actionRow.style.display = 'flex';
+      brightnessRow.style.display = 'flex';
+      brandRow.style.display = brands.length > 1 ? 'flex' : 'none';
+      brightnessSlider.value = 100;
+      stagePhoto.style.filter = 'brightness(100%)';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  brightnessSlider.addEventListener('input', () => {
+    stagePhoto.style.filter = `brightness(${brightnessSlider.value}%)`;
+  });
+
+  function applyPhotoTransform() {
+    stagePhoto.style.width = stagePhoto.naturalWidth + 'px';
+    stagePhoto.style.height = stagePhoto.naturalHeight + 'px';
+    stagePhoto.style.transform = `translate(-50%,-50%) translate(${ptx}px, ${pty}px) scale(${pscale})`;
+  }
+
+  // background photo pan/zoom — only when not interacting with a wheel
+  stage.addEventListener('mousedown', (e) => {
+    if (!hasPhoto || e.target.closest('.wheel-item')) return;
+    deselectAll();
+    photoDragging = true;
+    stage.classList.add('dragging');
+    photoStartX = e.clientX - ptx;
+    photoStartY = e.clientY - pty;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!photoDragging) return;
+    ptx = e.clientX - photoStartX;
+    pty = e.clientY - photoStartY;
+    applyPhotoTransform();
+  });
+  window.addEventListener('mouseup', () => { photoDragging = false; stage.classList.remove('dragging'); });
+
+  stage.addEventListener('wheel', (e) => {
+    if (!hasPhoto) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.92 : 1.08;
+    const newScale = Math.max(0.2, Math.min(4, pscale * delta));
+    const k = newScale / pscale;
+    ptx *= k; pty *= k;
+    pscale = newScale;
+    applyPhotoTransform();
+  }, { passive: false });
+
+  stage.addEventListener('touchstart', (e) => {
+    if (!hasPhoto || e.target.closest('.wheel-item')) return;
+    if (e.touches.length === 1) {
+      photoDragging = true;
+      photoStartX = e.touches[0].clientX - ptx;
+      photoStartY = e.touches[0].clientY - pty;
+    } else if (e.touches.length === 2) {
+      photoDragging = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchStartDist = Math.sqrt(dx*dx + dy*dy);
+      pinchStartScale = pscale;
+    }
+  }, { passive: true });
+  stage.addEventListener('touchmove', (e) => {
+    if (!hasPhoto) return;
+    if (e.touches.length === 1 && photoDragging) {
+      ptx = e.touches[0].clientX - photoStartX;
+      pty = e.touches[0].clientY - photoStartY;
+      applyPhotoTransform();
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const newScale = Math.max(0.2, Math.min(4, pinchStartScale * (dist / pinchStartDist)));
+      const k = newScale / pscale;
+      ptx *= k; pty *= k;
+      pscale = newScale;
+      applyPhotoTransform();
+    }
+  }, { passive: true });
+  stage.addEventListener('touchend', () => { photoDragging = false; });
+
+  function deselectAll() {
+    placedWheels.forEach(w => w.el.classList.remove('selected'));
+    selectedWheelId = null;
+  }
+
+  function renderWheel(w) {
+    w.el.style.left = (w.x - w.size/2) + 'px';
+    w.el.style.top = (w.y - w.size/2) + 'px';
+    w.el.style.width = w.size + 'px';
+    w.el.style.height = w.size + 'px';
+    w.el.querySelector('img').src = w.style;
+  }
+
+  function addWheel(x, y, size) {
+    const el = document.createElement('div');
+    el.className = 'wheel-item';
+    el.innerHTML = `<div class="wheel-shadow"></div><div class="wheel-backing"></div><img src="${selectedStyle}"><div class="resize-handle"></div><div class="delete-handle">✕</div>`;
+    stage.appendChild(el);
+    const w = { id: nextId++, el, x, y, size, style: selectedStyle };
+    renderWheel(w);
+    placedWheels.push(w);
+    wireWheelEvents(w);
+    selectWheel(w.id);
+    return w;
+  }
+
+  function selectWheel(id) {
+    deselectAll();
+    const w = placedWheels.find(w => w.id === id);
+    if (w) { w.el.classList.add('selected'); selectedWheelId = id; }
+  }
+
+  function wireWheelEvents(w) {
+    let dragging = false, dx0 = 0, dy0 = 0;
+    let resizing = false, rStartDist = 0, rStartSize = 0;
+
+    w.el.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      if (e.target.classList.contains('resize-handle')) return;
+      if (e.target.classList.contains('delete-handle')) return;
+      selectWheel(w.id);
+      dragging = true;
+      dx0 = e.clientX - w.x; dy0 = e.clientY - w.y;
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (dragging) { w.x = e.clientX - dx0; w.y = e.clientY - dy0; renderWheel(w); }
+      if (resizing) {
+        const dist = Math.hypot(e.clientX - w.x, e.clientY - w.y);
+        w.size = Math.max(24, rStartSize + (dist - rStartDist) * 1.6);
+        renderWheel(w);
+      }
+    });
+    window.addEventListener('mouseup', () => { dragging = false; resizing = false; });
+
+    w.el.querySelector('.resize-handle').addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      selectWheel(w.id);
+      resizing = true;
+      rStartDist = Math.hypot(e.clientX - w.x, e.clientY - w.y);
+      rStartSize = w.size;
+    });
+    w.el.querySelector('.delete-handle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      w.el.remove();
+      placedWheels = placedWheels.filter(x => x.id !== w.id);
+    });
+
+    // touch
+    w.el.addEventListener('touchstart', (e) => {
+      e.stopPropagation();
+      if (e.target.classList.contains('delete-handle')) return;
+      selectWheel(w.id);
+      if (e.target.classList.contains('resize-handle')) {
+        resizing = true;
+        rStartDist = Math.hypot(e.touches[0].clientX - w.x, e.touches[0].clientY - w.y);
+        rStartSize = w.size;
+      } else {
+        dragging = true;
+        dx0 = e.touches[0].clientX - w.x; dy0 = e.touches[0].clientY - w.y;
+      }
+    }, { passive: true });
+    w.el.addEventListener('touchmove', (e) => {
+      e.stopPropagation();
+      if (dragging) { w.x = e.touches[0].clientX - dx0; w.y = e.touches[0].clientY - dy0; renderWheel(w); }
+      if (resizing) {
+        const dist = Math.hypot(e.touches[0].clientX - w.x, e.touches[0].clientY - w.y);
+        w.size = Math.max(24, rStartSize + (dist - rStartDist) * 1.6);
+        renderWheel(w);
+      }
+    }, { passive: true });
+    w.el.addEventListener('touchend', (e) => {
+      e.stopPropagation();
+      dragging = false; resizing = false;
+    });
+  }
+
+  // build the brand picker — only shown once there's more than one brand to choose from
+  function renderBrandRow() {
+    brandRow.innerHTML = '';
+    if (brands.length < 2) return;
+    brands.forEach(b => {
+      const pill = document.createElement('button');
+      pill.className = 'brand-pill' + (b === selectedBrand ? ' active' : '');
+      pill.textContent = b;
+      pill.addEventListener('click', () => {
+        selectedBrand = b;
+        const firstOfBrand = wheelStyles.find(w => w.brand === selectedBrand);
+        if (firstOfBrand) selectedStyle = firstOfBrand.img;
+        renderBrandRow();
+        renderCarousel();
+      });
+      brandRow.appendChild(pill);
+    });
+  }
+  renderBrandRow();
+
+  // build the carousel: one card per wheel style in the selected brand, plus an "Add Wheel" card at the end
+  function renderCarousel() {
+    carouselTrack.innerHTML = '';
+    wheelStyles.filter(w => w.brand === selectedBrand).forEach(w => {
+      const card = document.createElement('div');
+      card.className = 'wheel-card' + (w.img === selectedStyle ? ' active' : '');
+      card.dataset.wheel = w.img;
+      card.innerHTML = `
+        <div class="card-photo"><img src="${w.img}"></div>
+        <div class="card-brand">${w.collection}</div>
+        <div class="card-collection">${w.brand} Wheels</div>
+        <div class="card-finish">${w.finish}</div>
+        <button class="apply-btn">Apply this style</button>`;
+      carouselTrack.appendChild(card);
+    });
+    const addCard = document.createElement('button');
+    addCard.className = 'add-wheel-btn';
+    addCard.id = 'addWheelBtn';
+    addCard.innerHTML = `<span class="plus">+</span><span>Add Wheel</span>`;
+    carouselTrack.appendChild(addCard);
+    addCard.addEventListener('click', () => {
+      const stageRect = stage.getBoundingClientRect();
+      addWheel(stageRect.width/2 + (Math.random()*40-20), stageRect.height/2 + (Math.random()*40-20), stageRect.width * 0.16);
+    });
+  }
+  renderCarousel();
+
+  carouselTrack.addEventListener('click', (e) => {
+    const card = e.target.closest('.wheel-card');
+    if (!card) return;
+    carouselTrack.querySelectorAll('.wheel-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    selectedStyle = card.dataset.wheel;
+    if (selectedWheelId != null) {
+      const w = placedWheels.find(w => w.id === selectedWheelId);
+      if (w) { w.style = selectedStyle; renderWheel(w); }
+    }
+  });
+
+  scrollLeftBtn.addEventListener('click', () => carouselTrack.scrollBy({left: -170, behavior: 'smooth'}));
+  scrollRightBtn.addEventListener('click', () => carouselTrack.scrollBy({left: 170, behavior: 'smooth'}));
+
+  resetBtn.addEventListener('click', () => {
+    hasPhoto = false;
+    stagePhoto.style.display = 'none';
+    stagePhoto.src = '';
+    stagePhoto.style.filter = 'brightness(100%)';
+    stageEmpty.style.display = 'flex';
+    placedWheels.forEach(w => w.el.remove());
+    placedWheels = [];
+    hint.style.display = 'none';
+    carouselWrap.style.display = 'none';
+    brandRow.style.display = 'none';
+    actionRow.style.display = 'none';
+    brightnessRow.style.display = 'none';
+    fileInput.value = '';
+  });
+
+  saveBtn.addEventListener('click', () => {
+    deselectAll();
+    const stageRect = stage.getBoundingClientRect();
+    const canvas = document.createElement('canvas');
+    canvas.width = stageRect.width * 2;
+    canvas.height = stageRect.height * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2);
+
+    ctx.save();
+    ctx.filter = stagePhoto.style.filter || 'none';
+    ctx.translate(stageRect.width/2 + ptx, stageRect.height/2 + pty);
+    ctx.scale(pscale, pscale);
+    ctx.drawImage(stagePhoto, -stagePhoto.naturalWidth/2, -stagePhoto.naturalHeight/2);
+    ctx.restore();
+
+    const loaders = placedWheels.map(w => new Promise(res => {
+      const img = new Image();
+      img.onload = () => {
+        const cx = w.x, cy = w.y, r = w.size * 0.37;
+        const grad = ctx.createRadialGradient(cx, cy - w.size*0.04, r*0.1, cx, cy, r);
+        grad.addColorStop(0, '#2b2b2b');
+        grad.addColorStop(0.55, '#141414');
+        grad.addColorStop(1, '#050505');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI*2);
+        ctx.fill();
+        ctx.drawImage(img, w.x - w.size/2, w.y - w.size/2, w.size, w.size);
+        res();
+      };
+      img.src = w.style;
+    }));
+
+    Promise.all(loaders).then(() => {
+      const link = document.createElement('a');
+      link.download = 'my-wheels.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  });
+</script>
+
+</body>
+</html>
