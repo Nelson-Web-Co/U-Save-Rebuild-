@@ -78,13 +78,13 @@
     #hero-rotator .hero-slide:nth-child(1){background-position:25% 85%;}
     #hero-rotator .hero-slide:nth-child(2){background-position:20% 75%;}
     #hero-rotator .hero-slide:nth-child(4){background-position:15% 80%;}
-    #hero-rotator .hero-slide:nth-child(6){background-position:25% 80%;}
   }
   .hero-slide{
     position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;
     background-position:center center;background-color:var(--charcoal);
     opacity:0;transition:opacity 1.6s ease;
   }
+  #hero-rotator .hero-slide:nth-child(6){background-position:center 78%;}
   .hero-slide.active{opacity:1;}
   .hero::after{
     content:'';position:absolute;inset:0;z-index:1;
@@ -161,8 +161,8 @@
   .mosaic::-webkit-scrollbar{height:6px;}
   .mosaic::-webkit-scrollbar-thumb{background:#444;border-radius:3px;}
   .mosaic img{height:190px;width:auto;object-fit:contain;background:#000;border-radius:2px;flex-shrink:0;cursor:zoom-in;}
-  .gallery-note{color:#a8a49a;font-size:13.5px;margin-top:20px;}
-  .gallery-note a{color:var(--yellow);text-decoration:underline;}
+  .gallery-note{color:#a8a49a;font-size:19px;margin-top:32px;text-align:center;}
+  .gallery-note a{color:var(--yellow);text-decoration:underline;font-weight:700;}
 
   /* CATALOGUE */
   .brand-strip{color:var(--tread);font-size:13px;line-height:1.9;margin-bottom:34px;}
@@ -338,7 +338,7 @@
   <div class="hero-slide" style="background-image:url('hero_landcruiser79.jpg');"></div>
   <div class="hero-slide" style="background-image:url('hero_ranger.jpg');"></div>
   <div class="hero-slide" style="background-image:url('hero_defender.jpg');"></div>
-  <div class="hero-slide" style="background-image:url('hero_starlet.jpg');"></div>
+  <div class="hero-slide" style="background-image:url('hero_cadillac.jpg');"></div>
   <div class="hero-copy">
     <h1 class="display">Tyres and mags done right.</h1>
   </div>
@@ -405,7 +405,6 @@
     <div class="car-block">
       <div class="car-label">Ford Falcon Ute — Chrome Wheels</div>
       <div class="mosaic">
-        <img src="falcon_1.jpg" alt="Ford Falcon ute 1">
         <img src="falcon_2.jpg" alt="Ford Falcon ute 2">
         <img src="falcon_3.jpg" alt="Ford Falcon ute 3">
       </div>
@@ -468,6 +467,18 @@
         <tr><td>2mm</td><td>Time to replace</td></tr>
         <tr><td>1.6mm</td><td>Legal limit</td></tr>
       </table>
+    </div>
+  </div>
+</section>
+
+<section id="batteries">
+  <div class="wrap" style="display:grid;grid-template-columns:1.3fr 1fr;gap:56px;align-items:center;">
+    <div>
+      <h2 class="sec-title display reveal-right">Batteries</h2>
+      <p>We offer <strong>FREE</strong> battery testing in-store. We have batteries for all occasions including; cars, 4x4, SUV, boats, deep cycle and motorcycle.</p>
+    </div>
+    <div class="photo-frame" style="aspect-ratio:4/3;border-radius:2px;overflow:hidden;">
+      <img src="battery_photo.webp" alt="Car battery available at U-Save Tyre Co." style="width:100%;height:100%;object-fit:cover;">
     </div>
   </div>
 </section>
