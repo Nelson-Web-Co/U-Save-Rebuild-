@@ -50,7 +50,7 @@
 
   .stage{
     position:relative;width:100%;aspect-ratio:16/9;
-    background:#1a1a1a url('car-placeholder.jpg') center 38%/cover no-repeat;
+    background:#1a1a1a url('car-placeholder.jpg') center 72%/cover no-repeat;
     border-radius:8px;overflow:hidden;
     touch-action:none;cursor:grab;
     box-shadow:0 12px 32px rgba(0,0,0,.25);
@@ -92,7 +92,7 @@
     box-shadow:inset 0 0 14px rgba(0,0,0,.85);
   }
   .wheel-item img{
-    position:relative;z-index:2;width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;
+    position:relative;z-index:2;width:100%;height:100%;object-fit:fill;display:block;pointer-events:none;
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));
   }
   .wheel-item.selected{outline:2px dashed rgba(255,255,255,.85);outline-offset:4px;border-radius:50%;}
@@ -116,6 +116,7 @@
 
   .controls{padding:18px 0;display:flex;flex-direction:column;gap:16px;}
   .hint{text-align:center;color:#5b5850;font-size:13.5px;}
+  .angle-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#5b5850;}
 
   .carousel-wrap{position:relative;display:none;align-items:center;gap:8px;}
   .carousel-arrow{
@@ -238,14 +239,14 @@
   <div class="guide" id="guide">
     <div class="guide-before">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg> Before you get started</h3>
-      <p>Take a side-profile photo of your car in bright, even lighting, with the camera at wheel height and lined up with the middle of the wheel — this gives the best result.</p>
+      <p>Take a photo of your car in bright, even lighting, with the camera at wheel height. Side-on works, but for the best result stand at the front corner so the car is at a slight angle (about 15°) — you'll see the front and the whole side, with both wheels showing.</p>
     </div>
     <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> How to get started</h3>
     <ol>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span><b>Upload your photo</b> — a side-on shot of your car works best.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v4M12 17v4M21 12h-4M7 12H3"/></svg><span>Click <b>Add Wheel</b>, pick a style from the carousel, then hit <b>Apply this style</b>.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M19 9l3 3-3 3M9 5l3-3 3 3M9 19l3 3 3-3"/><path d="M2 12h20M12 2v20"/></svg><span><b>Drag and resize</b> the wheel to match an existing wheel in your photo. Click <b>Add Wheel</b> again for each wheel you want covered. You can also drag or scroll/pinch on the photo itself to reposition or zoom it.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Not happy with the lighting in your photo? Use the <b>brightness slider</b> to even it out.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Photo taken at an angle? Select a wheel and use the <b>Angle slider</b> to match it. Not happy with the lighting? Use the <b>brightness slider</b> to even it out.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v13M7 11l5 5 5-5"/><path d="M4 19h16"/></svg><span>Click <b>Save My Look</b> to download an image of your new wheel setup.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 0 1-8.8 8.4 8.5 8.5 0 0 1-4-1L3 20l1.1-5.3a8.4 8.4 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5z"/></svg><span>Like what you see? Get in touch with the team to talk specifics.</span></li>
     </ol>
@@ -256,18 +257,24 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
       <div>Upload a photo of your car to get started</div>
       <button class="upload-btn" id="uploadBtnEmpty">Upload Photo</button>
-      <div class="tip">For best results, use a bright photo taken in daylight</div>
+      <div class="tip">Take your photo like this one — from the front corner of the car, at wheel height, in daylight</div>
     </div>
     <img class="stage-photo" id="stagePhoto" style="display:none;">
     <!-- wheel-item divs get added here dynamically -->
   </div>
 
   <div class="controls">
-    <div class="hint" id="hint" style="display:none;">Drag a wheel to move it, the orange dot to resize, or the dark dot to remove it. Not lined up right? Drag empty space to reposition the photo, or scroll/pinch to zoom.</div>
+    <div class="hint" id="hint" style="display:none;">Drag a wheel to move it, the orange dot to resize, or the dark dot to remove it. Car photo taken at an angle? Use the <b>Angle</b> slider to match the wheel to it. Not lined up right? Drag empty space to reposition the photo, or scroll/pinch to zoom.</div>
 
     <div class="brightness-row" id="brightnessRow" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <input type="range" id="brightnessSlider" min="60" max="150" value="100">
+    </div>
+
+    <div class="brightness-row" id="angleRow" style="display:none;" title="Wheel angle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="12" rx="5" ry="9"/><path d="M3 12h3M18 12h3"/></svg>
+      <input type="range" id="angleSlider" min="40" max="120" value="100">
+      <span class="angle-label">Angle</span>
     </div>
 
     <div class="brand-row" id="brandRow"></div>
@@ -306,6 +313,12 @@
   const saveBtn = document.getElementById('saveBtn');
   const brightnessRow = document.getElementById('brightnessRow');
   const brightnessSlider = document.getElementById('brightnessSlider');
+  const angleRow = document.getElementById('angleRow');
+  const angleSlider = document.getElementById('angleSlider');
+  angleSlider.addEventListener('input', () => {
+    const w = placedWheels.find(w => w.id === selectedWheelId);
+    if (w) { w.squash = angleSlider.value / 100; renderWheel(w); }
+  });
   const guide = document.getElementById('guide');
   const guideToggle = document.getElementById('guideToggle');
 
@@ -329,6 +342,11 @@
     { brand: "Konig", collection: "Rennform", finish: "Matte Grey", img: "rennform.png", thumb: "rennform_rim.png" },
     { brand: "Konig", collection: "Neoform", finish: "Gunmetal", img: "neoform.png", thumb: "neoform_rim.png" },
     { brand: "Konig", collection: "Octrix", finish: "Gunmetal", img: "octrix.png", thumb: "octrix_rim.png" },
+    // Supplier range (from supplier product file, shot at a slight angle; pair best with an angled car photo)
+    { brand: "Covert", collection: "RT", finish: "Bronze / Black Bead", img: "covert.png", thumb: "covert_rim.png" },
+    { brand: "ROH", collection: "One Twenty", finish: "Silver Machined", img: "roh.png", thumb: "roh_rim.png" },
+    { brand: "BGW", collection: "Apex", finish: "Machined Face", img: "bgw.png", thumb: "bgw_rim.png" },
+    { brand: "Black Rhino", collection: "Arsenal", finish: "Textured Matt Black", img: "blackrhino.png", thumb: "blackrhino_rim.png" },
   ];
 
   let selectedStyle = 'dekagram.png';
@@ -390,6 +408,7 @@
       carouselWrap.style.display = 'flex';
       actionRow.style.display = 'flex';
       brightnessRow.style.display = 'flex';
+      angleRow.style.display = 'flex';
       brandRow.style.display = brands.length > 1 ? 'flex' : 'none';
       brightnessSlider.value = 100;
       stagePhoto.style.filter = 'brightness(100%)';
@@ -474,9 +493,10 @@
   }
 
   function renderWheel(w) {
-    w.el.style.left = (w.x - w.size/2) + 'px';
+    const wd = w.size * (w.squash || 1);
+    w.el.style.left = (w.x - wd/2) + 'px';
     w.el.style.top = (w.y - w.size/2) + 'px';
-    w.el.style.width = w.size + 'px';
+    w.el.style.width = wd + 'px';
     w.el.style.height = w.size + 'px';
     w.el.querySelector('img').src = w.style;
   }
@@ -486,7 +506,7 @@
     el.className = 'wheel-item';
     el.innerHTML = `<div class="wheel-shadow"></div><div class="wheel-backing"></div><img src="${selectedStyle}"><div class="resize-handle"></div><div class="delete-handle">✕</div>`;
     stage.appendChild(el);
-    const w = { id: nextId++, el, x, y, size, style: selectedStyle };
+    const w = { id: nextId++, el, x, y, size, style: selectedStyle, squash: 1 };
     renderWheel(w);
     placedWheels.push(w);
     wireWheelEvents(w);
@@ -497,7 +517,7 @@
   function selectWheel(id) {
     deselectAll();
     const w = placedWheels.find(w => w.id === id);
-    if (w) { w.el.classList.add('selected'); selectedWheelId = id; }
+    if (w) { w.el.classList.add('selected'); selectedWheelId = id; angleSlider.value = Math.round((w.squash || 1) * 100); }
   }
 
   function wireWheelEvents(w) {
@@ -640,6 +660,7 @@
     brandRow.style.display = 'none';
     actionRow.style.display = 'none';
     brightnessRow.style.display = 'none';
+    angleRow.style.display = 'none';
     fileInput.value = '';
   });
 
@@ -662,16 +683,16 @@
     const loaders = placedWheels.map(w => new Promise(res => {
       const img = new Image();
       img.onload = () => {
-        const cx = w.x, cy = w.y, r = w.size * 0.37;
+        const cx = w.x, cy = w.y, r = w.size * 0.37, sq = w.squash || 1;
         const grad = ctx.createRadialGradient(cx, cy - w.size*0.04, r*0.1, cx, cy, r);
         grad.addColorStop(0, '#2b2b2b');
         grad.addColorStop(0.55, '#141414');
         grad.addColorStop(1, '#050505');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI*2);
+        ctx.ellipse(cx, cy, r * sq, r, 0, 0, Math.PI*2);
         ctx.fill();
-        ctx.drawImage(img, w.x - w.size/2, w.y - w.size/2, w.size, w.size);
+        ctx.drawImage(img, w.x - (w.size*sq)/2, w.y - w.size/2, w.size*sq, w.size);
         res();
       };
       img.src = w.style;
