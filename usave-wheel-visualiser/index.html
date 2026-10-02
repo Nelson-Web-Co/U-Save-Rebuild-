@@ -121,6 +121,8 @@
 
   .controls{padding:18px 0;display:flex;flex-direction:column;gap:16px;}
   .hint{text-align:center;color:#5b5850;font-size:13.5px;}
+  .flip-btn{border:2px solid #0F0E0D;background:transparent;border-radius:999px;padding:4px 12px;font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;white-space:nowrap;margin-left:6px;}
+  .flip-btn:hover{background:#0F0E0D;color:#fff;}
   .angle-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#5b5850;}
 
   .carousel-wrap{position:relative;display:none;align-items:center;gap:8px;}
@@ -285,8 +287,9 @@
 
     <div class="brightness-row" id="angleRow" style="display:none;" title="Wheel angle">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="12" rx="5" ry="9"/><path d="M3 12h3M18 12h3"/></svg>
-      <input type="range" id="angleSlider" min="40" max="120" value="100">
+      <input type="range" id="angleSlider" min="30" max="200" value="100">
       <span class="angle-label">Angle</span>
+      <button type="button" class="flip-btn" id="flipBtn" title="Mirror the selected wheel">&#8646; Flip</button>
     </div>
 
     <div class="brand-row" id="brandRow"></div>
@@ -334,6 +337,10 @@
     placedWheels.forEach(renderWheel);
   });
   const angleSlider = document.getElementById('angleSlider');
+  document.getElementById('flipBtn').addEventListener('click', () => {
+    const w = placedWheels.find(w => w.id === selectedWheelId);
+    if (w) { w.flip = !w.flip; renderWheel(w); }
+  });
   angleSlider.addEventListener('input', () => {
     const w = placedWheels.find(w => w.id === selectedWheelId);
     if (w) { w.squash = angleSlider.value / 100; renderWheel(w); }
@@ -820,6 +827,9 @@
     if (T) tl.src = T.src;
     const b = wheelBox(T);
     Object.assign(wl.style, { position: 'absolute', left: b.l*100 + '%', top: b.t*100 + '%', width: b.w*100 + '%', height: b.h*100 + '%' });
+    // flip mirrors the wheel + tyre together (wheel layer is mirrored inside the box too)
+    wl.style.transform = tl.style.transform = '';
+    if (w.flip) { tl.style.transform = 'scaleX(-1)'; wl.style.left = (1 - b.l - b.w)*100 + '%'; wl.style.transform = 'scaleX(-1)'; }
   }
 
   function addWheel(x, y, size) {
@@ -1017,8 +1027,11 @@
         ctx.ellipse(cx, cy, r * sq, r, 0, 0, Math.PI*2);
         ctx.fill();
         const bx = w.x - (w.size*sq)/2, by = w.y - w.size/2, bw = w.size*sq, bh = w.size, wb = wheelBox(TYRES[tyreType]);
+        ctx.save();
+        if (w.flip) { ctx.translate(w.x, 0); ctx.scale(-1, 1); ctx.translate(-w.x, 0); }
         ctx.drawImage(img, bx + wb.l*bw, by + wb.t*bh, wb.w*bw, wb.h*bh);
         if (TYRES[tyreType]) ctx.drawImage(tyre, bx, by, bw, bh);
+        ctx.restore();
         res();
       };
       img.onload = ready; tyre.onload = ready;
