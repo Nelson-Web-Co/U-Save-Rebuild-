@@ -33,7 +33,7 @@
   }
   header::after{
     content:'';position:absolute;right:-70px;top:50%;transform:translateY(-50%);
-    width:320px;height:320px;background:url('dekagram.png') center/contain no-repeat;
+    width:320px;height:320px;background:url('header_wheel.png') center/contain no-repeat;
     opacity:.12;pointer-events:none;
   }
   header .eyebrow{
@@ -87,7 +87,7 @@
   }
   .wheel-backing{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:74%;height:74%;border-radius:50%;pointer-events:none;z-index:1;
+    width:54%;height:60%;border-radius:50%;pointer-events:none;z-index:1;
     background:radial-gradient(circle at 50% 42%, #2b2b2b 0%, #141414 55%, #050505 100%);
     box-shadow:inset 0 0 14px rgba(0,0,0,.85);
   }
@@ -95,6 +95,11 @@
     position:relative;z-index:2;width:100%;height:100%;object-fit:fill;display:block;pointer-events:none;
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));
   }
+  .wheel-item img.tyre-layer{position:absolute;inset:0;z-index:3;filter:none;}
+  .tyre-row{display:flex;justify-content:center;align-items:center;gap:8px;margin:4px 0 10px;}
+  .tyre-row .label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#5b5850;margin-right:4px;}
+  .tyre-btn{border:2px solid #0F0E0D;background:transparent;padding:7px 18px;border-radius:999px;font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;}
+  .tyre-btn.active{background:#0F0E0D;color:#fff;}
   .wheel-item.selected{outline:2px dashed rgba(255,255,255,.85);outline-offset:4px;border-radius:50%;}
 
   .resize-handle{
@@ -239,11 +244,11 @@
   <div class="guide" id="guide">
     <div class="guide-before">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg> Before you get started</h3>
-      <p>Take a photo of your car in bright, even lighting, with the camera at wheel height. Side-on works, but for the best result stand at the front corner so the car is at a slight angle (about 15°) — you'll see the front and the whole side, with both wheels showing.</p>
+      <p>Take a photo of your car in bright, even lighting, with the camera at wheel height. Stand at the front corner so the car is at a slight angle (about 15°) — you'll see the front and the whole side, with both wheels showing.</p>
     </div>
     <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> How to get started</h3>
     <ol>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span><b>Upload your photo</b> — a side-on shot of your car works best.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span><b>Upload your photo</b> — taken from the front corner of the car works best.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v4M12 17v4M21 12h-4M7 12H3"/></svg><span>Click <b>Add Wheel</b>, pick a style from the carousel, then hit <b>Apply this style</b>.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M19 9l3 3-3 3M9 5l3-3 3 3M9 19l3 3 3-3"/><path d="M2 12h20M12 2v20"/></svg><span><b>Drag and resize</b> the wheel to match an existing wheel in your photo. Click <b>Add Wheel</b> again for each wheel you want covered. You can also drag or scroll/pinch on the photo itself to reposition or zoom it.</span></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span>Photo taken at an angle? Select a wheel and use the <b>Angle slider</b> to match it. Not happy with the lighting? Use the <b>brightness slider</b> to even it out.</span></li>
@@ -264,11 +269,18 @@
   </div>
 
   <div class="controls">
-    <div class="hint" id="hint" style="display:none;">Drag a wheel to move it, the orange dot to resize, or the dark dot to remove it. Car photo taken at an angle? Use the <b>Angle</b> slider to match the wheel to it. Not lined up right? Drag empty space to reposition the photo, or scroll/pinch to zoom.</div>
+    <div class="hint" id="hint" style="display:none;">Drag a wheel to move it, the orange dot to resize, or the dark dot to remove it. Car photo taken at an angle? Use the <b>Angle</b> slider to match the wheel to it, and choose a tyre, or keep your own. Not lined up right? Drag empty space to reposition the photo, or scroll/pinch to zoom.</div>
 
     <div class="brightness-row" id="brightnessRow" style="display:none;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <input type="range" id="brightnessSlider" min="60" max="150" value="100">
+    </div>
+
+    <div class="tyre-row" id="tyreRow" style="display:none;">
+      <span class="label">Tyre</span>
+      <button class="tyre-btn active" data-tyre="road">Road</button>
+      <button class="tyre-btn" data-tyre="4wd">4WD</button>
+      <button class="tyre-btn" data-tyre="none">Keep my tyres</button>
     </div>
 
     <div class="brightness-row" id="angleRow" style="display:none;" title="Wheel angle">
@@ -314,6 +326,13 @@
   const brightnessRow = document.getElementById('brightnessRow');
   const brightnessSlider = document.getElementById('brightnessSlider');
   const angleRow = document.getElementById('angleRow');
+  const tyreRow = document.getElementById('tyreRow');
+  tyreRow.addEventListener('click', e => {
+    const b = e.target.closest('.tyre-btn'); if (!b) return;
+    tyreType = b.dataset.tyre;
+    tyreRow.querySelectorAll('.tyre-btn').forEach(x => x.classList.toggle('active', x === b));
+    placedWheels.forEach(renderWheel);
+  });
   const angleSlider = document.getElementById('angleSlider');
   angleSlider.addEventListener('input', () => {
     const w = placedWheels.find(w => w.id === selectedWheelId);
@@ -329,27 +348,322 @@
   });
 
   // Available wheel styles — more added as clean photos are sourced
+  /*WHEELS_START*/
   const wheelStyles = [
-    { brand: "Konig", collection: "Dekagram", finish: "Gunmetal", img: "dekagram.png", thumb: "dekagram_rim.png" },
-    { brand: "Konig", collection: "F1M", finish: "Black", img: "f1m_black.png", thumb: "f1m_black_rim.png" },
-    { brand: "Konig", collection: "F1M", finish: "Silver", img: "f1m_silver.png", thumb: "f1m_silver_rim.png" },
-    { brand: "Konig", collection: "F3S", finish: "Gunmetal", img: "f3s.png", thumb: "f3s_rim.png" },
-    { brand: "Konig", collection: "F5R", finish: "Bronze", img: "f5r_bronze.png", thumb: "f5r_bronze_rim.png" },
-    { brand: "Konig", collection: "F5R", finish: "Gunmetal", img: "f5r_gunmetal.png", thumb: "f5r_gunmetal_rim.png" },
-    { brand: "Konig", collection: "F6SX", finish: "Bronze", img: "f6sx_bronze.png", thumb: "f6sx_bronze_rim.png" },
-    { brand: "Konig", collection: "Hyperspec", finish: "Bronze", img: "hyperspec_bronze.png", thumb: "hyperspec_bronze_rim.png" },
-    { brand: "Konig", collection: "Hyperspec", finish: "Carbon Machined", img: "hyperspec_carbmach.png", thumb: "hyperspec_carbmach_rim.png" },
-    { brand: "Konig", collection: "Rennform", finish: "Matte Grey", img: "rennform.png", thumb: "rennform_rim.png" },
-    { brand: "Konig", collection: "Neoform", finish: "Gunmetal", img: "neoform.png", thumb: "neoform_rim.png" },
-    { brand: "Konig", collection: "Octrix", finish: "Gunmetal", img: "octrix.png", thumb: "octrix_rim.png" },
-    // Supplier range (from supplier product file, shot at a slight angle; pair best with an angled car photo)
-    { brand: "Covert", collection: "RT", finish: "Bronze / Black Bead", img: "covert.png", thumb: "covert_rim.png" },
-    { brand: "ROH", collection: "One Twenty", finish: "Silver Machined", img: "roh.png", thumb: "roh_rim.png" },
-    { brand: "BGW", collection: "Apex", finish: "Machined Face", img: "bgw.png", thumb: "bgw_rim.png" },
-    { brand: "Black Rhino", collection: "Arsenal", finish: "Textured Matt Black", img: "blackrhino.png", thumb: "blackrhino_rim.png" },
+    {"brand": "Alloy Creations", "collection": "Ac505", "finish": "Chrome", "img": "alloy-creations-ac505-chrome.png", "thumb": "alloy-creations-ac505-chrome_rim.png"},
+    {"brand": "Alloy Creations", "collection": "Ac505", "finish": "Gloss Black w/Machined Lip", "img": "alloy-creations-ac505-gloss-black-w-machined-lip.png", "thumb": "alloy-creations-ac505-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "Alloy Creations", "collection": "Ac505", "finish": "Grey w/Machined Lip", "img": "alloy-creations-ac505-grey-w-machined-lip.png", "thumb": "alloy-creations-ac505-grey-w-machined-lip_rim.png"},
+    {"brand": "Alloy Creations", "collection": "Ac525", "finish": "Gloss Black w/Machined Lip", "img": "alloy-creations-ac525-gloss-black-w-machined-lip.png", "thumb": "alloy-creations-ac525-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "Alloy Creations", "collection": "Ac525", "finish": "Grey w/Machined Lip", "img": "alloy-creations-ac525-grey-w-machined-lip.png", "thumb": "alloy-creations-ac525-grey-w-machined-lip_rim.png"},
+    {"brand": "Alloy Creations", "collection": "Ac525", "finish": "Polished", "img": "alloy-creations-ac525-polished.png", "thumb": "alloy-creations-ac525-polished_rim.png"},
+    {"brand": "American Truxx", "collection": "Boom", "finish": "Gloss Black w/Milled Spokes", "img": "american-truxx-boom-gloss-black-w-milled-spokes.png", "thumb": "american-truxx-boom-gloss-black-w-milled-spokes_rim.png"},
+    {"brand": "BGW", "collection": "Anaheim", "finish": "Gloss Black", "img": "bgw-anaheim-gloss-black.png", "thumb": "bgw-anaheim-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Anvil", "finish": "Matt Black", "img": "bgw-anvil-matt-black.png", "thumb": "bgw-anvil-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Anvil", "finish": "Matt Black w/Dark Tinted Spokes", "img": "bgw-anvil-matt-black-w-dark-tinted-spokes.png", "thumb": "bgw-anvil-matt-black-w-dark-tinted-spokes_rim.png"},
+    {"brand": "BGW", "collection": "Apex", "finish": "Gloss Black w/Machined Face", "img": "bgw-apex-gloss-black-w-machined-face.png", "thumb": "bgw-apex-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Apex", "finish": "Matt Black", "img": "bgw-apex-matt-black.png", "thumb": "bgw-apex-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Aqua", "finish": "Gloss Black", "img": "bgw-aqua-gloss-black.png", "thumb": "bgw-aqua-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Aqua", "finish": "Gloss Black w/Machined Face", "img": "bgw-aqua-gloss-black-w-machined-face.png", "thumb": "bgw-aqua-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Atlas", "finish": "Bronze w/Black Bead", "img": "bgw-atlas-bronze-w-black-bead.png", "thumb": "bgw-atlas-bronze-w-black-bead_rim.png"},
+    {"brand": "BGW", "collection": "Atlas", "finish": "Grey w/Black Bead", "img": "bgw-atlas-grey-w-black-bead.png", "thumb": "bgw-atlas-grey-w-black-bead_rim.png"},
+    {"brand": "BGW", "collection": "Atlas", "finish": "Matt Black", "img": "bgw-atlas-matt-black.png", "thumb": "bgw-atlas-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Axis", "finish": "Gloss Black", "img": "bgw-axis-gloss-black.png", "thumb": "bgw-axis-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Bandit", "finish": "Gloss Black w/Machined Lip", "img": "bgw-bandit-gloss-black-w-machined-lip.png", "thumb": "bgw-bandit-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Bandit", "finish": "Matt Black", "img": "bgw-bandit-matt-black.png", "thumb": "bgw-bandit-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Beast", "finish": "Bronze", "img": "bgw-beast-bronze.png", "thumb": "bgw-beast-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Beast", "finish": "Gloss Black", "img": "bgw-beast-gloss-black.png", "thumb": "bgw-beast-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Beast", "finish": "Gloss Gunmetal", "img": "bgw-beast-gloss-gunmetal.png", "thumb": "bgw-beast-gloss-gunmetal_rim.png"},
+    {"brand": "BGW", "collection": "Beast", "finish": "Matt Black", "img": "bgw-beast-matt-black.png", "thumb": "bgw-beast-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Black Widow", "finish": "Gloss Black", "img": "bgw-black-widow-gloss-black.png", "thumb": "bgw-black-widow-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Black Widow", "finish": "Hyper Dark", "img": "bgw-black-widow-hyper-dark.png", "thumb": "bgw-black-widow-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Black Widow", "finish": "Satin Black w/Machined Face", "img": "bgw-black-widow-satin-black-w-machined-face.png", "thumb": "bgw-black-widow-satin-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Blast", "finish": "Gloss Black", "img": "bgw-blast-gloss-black.png", "thumb": "bgw-blast-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Boss", "finish": "Gloss Black", "img": "bgw-boss-gloss-black.png", "thumb": "bgw-boss-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Boss", "finish": "Matt Black", "img": "bgw-boss-matt-black.png", "thumb": "bgw-boss-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Breach", "finish": "Matt Black", "img": "bgw-breach-matt-black.png", "thumb": "bgw-breach-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "C48", "finish": "Gloss Black", "img": "bgw-c48-gloss-black.png", "thumb": "bgw-c48-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Capone", "finish": "Matt Black", "img": "bgw-capone-matt-black.png", "thumb": "bgw-capone-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Cartel", "finish": "Gloss Black w/Tinted Milled Spokes", "img": "bgw-cartel-gloss-black-w-tinted-milled-spokes.png", "thumb": "bgw-cartel-gloss-black-w-tinted-milled-spokes_rim.png"},
+    {"brand": "BGW", "collection": "Cartel", "finish": "Gloss Gunmetal", "img": "bgw-cartel-gloss-gunmetal.png", "thumb": "bgw-cartel-gloss-gunmetal_rim.png"},
+    {"brand": "BGW", "collection": "Circuit", "finish": "Gloss Black", "img": "bgw-circuit-gloss-black.png", "thumb": "bgw-circuit-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Circuit", "finish": "Hyper Dark", "img": "bgw-circuit-hyper-dark.png", "thumb": "bgw-circuit-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Compton", "finish": "Gloss Black", "img": "bgw-compton-gloss-black.png", "thumb": "bgw-compton-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Compton", "finish": "Gloss Black w/Machined Face", "img": "bgw-compton-gloss-black-w-machined-face.png", "thumb": "bgw-compton-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Compton", "finish": "Gloss Black w/Machined Face & Blue Undercut", "img": "bgw-compton-gloss-black-w-machined-face-blue-undercut.png", "thumb": "bgw-compton-gloss-black-w-machined-face-blue-undercut_rim.png"},
+    {"brand": "BGW", "collection": "Compton", "finish": "Gloss Black w/Machined Face & Red Undercut", "img": "bgw-compton-gloss-black-w-machined-face-red-undercut.png", "thumb": "bgw-compton-gloss-black-w-machined-face-red-undercut_rim.png"},
+    {"brand": "BGW", "collection": "Conquest", "finish": "Gloss Black", "img": "bgw-conquest-gloss-black.png", "thumb": "bgw-conquest-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Cruze", "finish": "Gloss Black", "img": "bgw-cruze-gloss-black.png", "thumb": "bgw-cruze-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Cruze", "finish": "Matt Black", "img": "bgw-cruze-matt-black.png", "thumb": "bgw-cruze-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Dc", "finish": "Gloss Black", "img": "bgw-dc-gloss-black.png", "thumb": "bgw-dc-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Dc Emotion5", "finish": "Gloss Black w/Machined Lip", "img": "bgw-dc-emotion5-gloss-black-w-machined-lip.png", "thumb": "bgw-dc-emotion5-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Dc Emotion5", "finish": "Gunmetal w/Machined Lip", "img": "bgw-dc-emotion5-gunmetal-w-machined-lip.png", "thumb": "bgw-dc-emotion5-gunmetal-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Dc Five", "finish": "Bronze", "img": "bgw-dc-five-bronze.png", "thumb": "bgw-dc-five-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Dc Five", "finish": "Gloss Black", "img": "bgw-dc-five-gloss-black.png", "thumb": "bgw-dc-five-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Dc Five", "finish": "Hyper Dark", "img": "bgw-dc-five-hyper-dark.png", "thumb": "bgw-dc-five-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Dc Five", "finish": "White", "img": "bgw-dc-five-white.png", "thumb": "bgw-dc-five-white_rim.png"},
+    {"brand": "BGW", "collection": "Dc R1", "finish": "Gloss Black Milled w/Machined Lip", "img": "bgw-dc-r1-gloss-black-milled-w-machined-lip.png", "thumb": "bgw-dc-r1-gloss-black-milled-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Dc R2", "finish": "Gloss Black w/Milled Spoke & Machined Lip", "img": "bgw-dc-r2-gloss-black-w-milled-spoke-machined-lip.png", "thumb": "bgw-dc-r2-gloss-black-w-milled-spoke-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Dc Six", "finish": "Matt Black", "img": "bgw-dc-six-matt-black.png", "thumb": "bgw-dc-six-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Dc Tanaka", "finish": "Dark Bronze", "img": "bgw-dc-tanaka-dark-bronze.png", "thumb": "bgw-dc-tanaka-dark-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Dc Tanaka", "finish": "Hyper Dark", "img": "bgw-dc-tanaka-hyper-dark.png", "thumb": "bgw-dc-tanaka-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Dc Tanaka", "finish": "Matt Black", "img": "bgw-dc-tanaka-matt-black.png", "thumb": "bgw-dc-tanaka-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Dc Tanaka", "finish": "White", "img": "bgw-dc-tanaka-white.png", "thumb": "bgw-dc-tanaka-white_rim.png"},
+    {"brand": "BGW", "collection": "Dc Ten", "finish": "Matt Black", "img": "bgw-dc-ten-matt-black.png", "thumb": "bgw-dc-ten-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Dc Ten", "finish": "Matt Bronze", "img": "bgw-dc-ten-matt-bronze.png", "thumb": "bgw-dc-ten-matt-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Dc-rs", "finish": "Matt Black w/Machined Lip", "img": "bgw-dc-rs-matt-black-w-machined-lip.png", "thumb": "bgw-dc-rs-matt-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Delta", "finish": "Gloss Black w/Machined Face", "img": "bgw-delta-gloss-black-w-machined-face.png", "thumb": "bgw-delta-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Delta", "finish": "Matt Black", "img": "bgw-delta-matt-black.png", "thumb": "bgw-delta-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Dominator", "finish": "Gloss Black", "img": "bgw-dominator-gloss-black.png", "thumb": "bgw-dominator-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Ebisu", "finish": "Gloss Black", "img": "bgw-ebisu-gloss-black.png", "thumb": "bgw-ebisu-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Ebisu", "finish": "Gloss Black w/Machined Lip", "img": "bgw-ebisu-gloss-black-w-machined-lip.png", "thumb": "bgw-ebisu-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Ebisu", "finish": "Gloss Gunmetal w/Machined Lip", "img": "bgw-ebisu-gloss-gunmetal-w-machined-lip.png", "thumb": "bgw-ebisu-gloss-gunmetal-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Escobar", "finish": "Gloss Black", "img": "bgw-escobar-gloss-black.png", "thumb": "bgw-escobar-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Escobar", "finish": "Matt Black", "img": "bgw-escobar-matt-black.png", "thumb": "bgw-escobar-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Euro Mesh", "finish": "Gloss Black w/Machined Lip", "img": "bgw-euro-mesh-gloss-black-w-machined-lip.png", "thumb": "bgw-euro-mesh-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "F6", "finish": "Gloss Black W/ Machined Lip", "img": "bgw-f6-gloss-black-w-machined-lip.png", "thumb": "bgw-f6-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Fury", "finish": "Gloss Black w/Machined Lip", "img": "bgw-fury-gloss-black-w-machined-lip.png", "thumb": "bgw-fury-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Fury", "finish": "Matt Black", "img": "bgw-fury-matt-black.png", "thumb": "bgw-fury-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Goliath", "finish": "Gloss Black", "img": "bgw-goliath-gloss-black.png", "thumb": "bgw-goliath-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Goliath", "finish": "Matt Black w/Dark Tinted Spokes", "img": "bgw-goliath-matt-black-w-dark-tinted-spokes.png", "thumb": "bgw-goliath-matt-black-w-dark-tinted-spokes_rim.png"},
+    {"brand": "BGW", "collection": "Hampton", "finish": "Gloss Black", "img": "bgw-hampton-gloss-black.png", "thumb": "bgw-hampton-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Hcf", "finish": "Gloss Black", "img": "bgw-hcf-gloss-black.png", "thumb": "bgw-hcf-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Hcm", "finish": "Gloss Black", "img": "bgw-hcm-gloss-black.png", "thumb": "bgw-hcm-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Hcm", "finish": "Matt Black", "img": "bgw-hcm-matt-black.png", "thumb": "bgw-hcm-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Hcm", "finish": "Matt Flat Black", "img": "bgw-hcm-matt-flat-black.png", "thumb": "bgw-hcm-matt-flat-black_rim.png"},
+    {"brand": "BGW", "collection": "Hunter", "finish": "Matt Black", "img": "bgw-hunter-matt-black.png", "thumb": "bgw-hunter-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Hunter", "finish": "Matt Black w/Dark Tinted Spokes", "img": "bgw-hunter-matt-black-w-dark-tinted-spokes.png", "thumb": "bgw-hunter-matt-black-w-dark-tinted-spokes_rim.png"},
+    {"brand": "BGW", "collection": "ION 135", "finish": "Matt Black", "img": "bgw-ion-135-matt-black.png", "thumb": "bgw-ion-135-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Icarus", "finish": "Bronze w/Black Bead", "img": "bgw-icarus-bronze-w-black-bead.png", "thumb": "bgw-icarus-bronze-w-black-bead_rim.png"},
+    {"brand": "BGW", "collection": "Icarus", "finish": "Grey w/Black Bead & Bright Bolts", "img": "bgw-icarus-grey-w-black-bead-bright-bolts.png", "thumb": "bgw-icarus-grey-w-black-bead-bright-bolts_rim.png"},
+    {"brand": "BGW", "collection": "Icarus", "finish": "Matt Black", "img": "bgw-icarus-matt-black.png", "thumb": "bgw-icarus-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Insurgent", "finish": "Matt Black", "img": "bgw-insurgent-matt-black.png", "thumb": "bgw-insurgent-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-10", "finish": "Matt Black", "img": "bgw-jd-10-matt-black.png", "thumb": "bgw-jd-10-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-10", "finish": "Satin Bronze", "img": "bgw-jd-10-satin-bronze.png", "thumb": "bgw-jd-10-satin-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Jd-10", "finish": "White", "img": "bgw-jd-10-white.png", "thumb": "bgw-jd-10-white_rim.png"},
+    {"brand": "BGW", "collection": "Jd-4", "finish": "Gloss Black", "img": "bgw-jd-4-gloss-black.png", "thumb": "bgw-jd-4-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-4", "finish": "Hyper Dark", "img": "bgw-jd-4-hyper-dark.png", "thumb": "bgw-jd-4-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Jd-6", "finish": "Gloss Black", "img": "bgw-jd-6-gloss-black.png", "thumb": "bgw-jd-6-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-7", "finish": "Matt Black", "img": "bgw-jd-7-matt-black.png", "thumb": "bgw-jd-7-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-m", "finish": "Gloss Black", "img": "bgw-jd-m-gloss-black.png", "thumb": "bgw-jd-m-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-m", "finish": "Satin Black w/Machined Face", "img": "bgw-jd-m-satin-black-w-machined-face.png", "thumb": "bgw-jd-m-satin-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Jd-r", "finish": "Gloss Black", "img": "bgw-jd-r-gloss-black.png", "thumb": "bgw-jd-r-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Jd-r", "finish": "Satin Bronze", "img": "bgw-jd-r-satin-bronze.png", "thumb": "bgw-jd-r-satin-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Laguna", "finish": "Hyper Black w/Machined Lip", "img": "bgw-laguna-hyper-black-w-machined-lip.png", "thumb": "bgw-laguna-hyper-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Laguna", "finish": "Matt Black", "img": "bgw-laguna-matt-black.png", "thumb": "bgw-laguna-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Legend", "finish": "Gloss Black", "img": "bgw-legend-gloss-black.png", "thumb": "bgw-legend-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Legend", "finish": "Matt Black", "img": "bgw-legend-matt-black.png", "thumb": "bgw-legend-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Lethal", "finish": "Gloss Black", "img": "bgw-lethal-gloss-black.png", "thumb": "bgw-lethal-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Mansell", "finish": "Gloss Black", "img": "bgw-mansell-gloss-black.png", "thumb": "bgw-mansell-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Mansell", "finish": "Matt Black", "img": "bgw-mansell-matt-black.png", "thumb": "bgw-mansell-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Mayhem", "finish": "Matt Black", "img": "bgw-mayhem-matt-black.png", "thumb": "bgw-mayhem-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Modena", "finish": "Gloss Black", "img": "bgw-modena-gloss-black.png", "thumb": "bgw-modena-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Oslo", "finish": "Matt Black", "img": "bgw-oslo-matt-black.png", "thumb": "bgw-oslo-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Primal", "finish": "Gloss Black", "img": "bgw-primal-gloss-black.png", "thumb": "bgw-primal-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Primal", "finish": "Matt Black", "img": "bgw-primal-matt-black.png", "thumb": "bgw-primal-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Prost", "finish": "Gloss Black", "img": "bgw-prost-gloss-black.png", "thumb": "bgw-prost-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Prost", "finish": "Matt Black", "img": "bgw-prost-matt-black.png", "thumb": "bgw-prost-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Pursuit", "finish": "Matt Black w/Gloss Black Face", "img": "bgw-pursuit-matt-black-w-gloss-black-face.png", "thumb": "bgw-pursuit-matt-black-w-gloss-black-face_rim.png"},
+    {"brand": "BGW", "collection": "R5", "finish": "White", "img": "bgw-r5-white.png", "thumb": "bgw-r5-white_rim.png"},
+    {"brand": "BGW", "collection": "Rampage", "finish": "Gloss Black", "img": "bgw-rampage-gloss-black.png", "thumb": "bgw-rampage-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Rampage", "finish": "Gloss Black w/Machined Lip", "img": "bgw-rampage-gloss-black-w-machined-lip.png", "thumb": "bgw-rampage-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "BGW", "collection": "Ratchet", "finish": "Gloss Black w/Machined Face", "img": "bgw-ratchet-gloss-black-w-machined-face.png", "thumb": "bgw-ratchet-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Ratchet", "finish": "Matt Black", "img": "bgw-ratchet-matt-black.png", "thumb": "bgw-ratchet-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Rc-1", "finish": "Matt Graphite", "img": "bgw-rc-1-matt-graphite.png", "thumb": "bgw-rc-1-matt-graphite_rim.png"},
+    {"brand": "BGW", "collection": "Rc-1", "finish": "Satin Black", "img": "bgw-rc-1-satin-black.png", "thumb": "bgw-rc-1-satin-black_rim.png"},
+    {"brand": "BGW", "collection": "Rc-2", "finish": "Matt Black", "img": "bgw-rc-2-matt-black.png", "thumb": "bgw-rc-2-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Ritz", "finish": "Gloss Black w/Milled Words", "img": "bgw-ritz-gloss-black-w-milled-words.png", "thumb": "bgw-ritz-gloss-black-w-milled-words_rim.png"},
+    {"brand": "BGW", "collection": "Rtx", "finish": "Matt Black", "img": "bgw-rtx-matt-black.png", "thumb": "bgw-rtx-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Savaged", "finish": "Gloss Black", "img": "bgw-savaged-gloss-black.png", "thumb": "bgw-savaged-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Savaged", "finish": "Matt Black", "img": "bgw-savaged-matt-black.png", "thumb": "bgw-savaged-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Saxon", "finish": "Gloss Black w/Machined Face", "img": "bgw-saxon-gloss-black-w-machined-face.png", "thumb": "bgw-saxon-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Shadow", "finish": "Gloss Black", "img": "bgw-shadow-gloss-black.png", "thumb": "bgw-shadow-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Shadow", "finish": "Matt Black", "img": "bgw-shadow-matt-black.png", "thumb": "bgw-shadow-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Shadow", "finish": "Matt Bronze", "img": "bgw-shadow-matt-bronze.png", "thumb": "bgw-shadow-matt-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Siege", "finish": "Gloss Black", "img": "bgw-siege-gloss-black.png", "thumb": "bgw-siege-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Siege", "finish": "Matt Graphite", "img": "bgw-siege-matt-graphite.png", "thumb": "bgw-siege-matt-graphite_rim.png"},
+    {"brand": "BGW", "collection": "Spur", "finish": "Gloss Black", "img": "bgw-spur-gloss-black.png", "thumb": "bgw-spur-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Spur", "finish": "Hyper Dark", "img": "bgw-spur-hyper-dark.png", "thumb": "bgw-spur-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Sussex", "finish": "Gloss Black", "img": "bgw-sussex-gloss-black.png", "thumb": "bgw-sussex-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Suzuka", "finish": "Matt Black", "img": "bgw-suzuka-matt-black.png", "thumb": "bgw-suzuka-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Suzuka", "finish": "Satin Black w/Machined Face", "img": "bgw-suzuka-satin-black-w-machined-face.png", "thumb": "bgw-suzuka-satin-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Tech-9", "finish": "Gloss Black", "img": "bgw-tech-9-gloss-black.png", "thumb": "bgw-tech-9-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Tempest", "finish": "Gloss Black", "img": "bgw-tempest-gloss-black.png", "thumb": "bgw-tempest-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Tempest", "finish": "Matt Black", "img": "bgw-tempest-matt-black.png", "thumb": "bgw-tempest-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Terror", "finish": "Gloss Black", "img": "bgw-terror-gloss-black.png", "thumb": "bgw-terror-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Thanos", "finish": "Gloss Black", "img": "bgw-thanos-gloss-black.png", "thumb": "bgw-thanos-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Thanos", "finish": "Matt Black", "img": "bgw-thanos-matt-black.png", "thumb": "bgw-thanos-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Thanos", "finish": "Matt Black w/Dark Tinted Spokes", "img": "bgw-thanos-matt-black-w-dark-tinted-spokes.png", "thumb": "bgw-thanos-matt-black-w-dark-tinted-spokes_rim.png"},
+    {"brand": "BGW", "collection": "Toretto", "finish": "Gloss Black", "img": "bgw-toretto-gloss-black.png", "thumb": "bgw-toretto-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Toretto", "finish": "Matt Black", "img": "bgw-toretto-matt-black.png", "thumb": "bgw-toretto-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Toretto", "finish": "Satin Black w/Machined Face", "img": "bgw-toretto-satin-black-w-machined-face.png", "thumb": "bgw-toretto-satin-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Torque", "finish": "Gloss Black", "img": "bgw-torque-gloss-black.png", "thumb": "bgw-torque-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Torque", "finish": "Gloss Black w/Machined Face", "img": "bgw-torque-gloss-black-w-machined-face.png", "thumb": "bgw-torque-gloss-black-w-machined-face_rim.png"},
+    {"brand": "BGW", "collection": "Trader", "finish": "Matt Black", "img": "bgw-trader-matt-black.png", "thumb": "bgw-trader-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Trader", "finish": "Matt Black w/Gloss Black Face", "img": "bgw-trader-matt-black-w-gloss-black-face.png", "thumb": "bgw-trader-matt-black-w-gloss-black-face_rim.png"},
+    {"brand": "BGW", "collection": "Transporter", "finish": "Gloss Black", "img": "bgw-transporter-gloss-black.png", "thumb": "bgw-transporter-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Tribal", "finish": "Matt Black", "img": "bgw-tribal-matt-black.png", "thumb": "bgw-tribal-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Triple Five", "finish": "Matt Black", "img": "bgw-triple-five-matt-black.png", "thumb": "bgw-triple-five-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Urban", "finish": "Gloss Black", "img": "bgw-urban-gloss-black.png", "thumb": "bgw-urban-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Vader", "finish": "Matt Black", "img": "bgw-vader-matt-black.png", "thumb": "bgw-vader-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Venom", "finish": "Gloss Black", "img": "bgw-venom-gloss-black.png", "thumb": "bgw-venom-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Venom", "finish": "Gloss Black w/Machined Face & Dark Tint", "img": "bgw-venom-gloss-black-w-machined-face-dark-tint.png", "thumb": "bgw-venom-gloss-black-w-machined-face-dark-tint_rim.png"},
+    {"brand": "BGW", "collection": "Verde V99", "finish": "Satin Black", "img": "bgw-verde-v99-satin-black.png", "thumb": "bgw-verde-v99-satin-black_rim.png"},
+    {"brand": "BGW", "collection": "Vm12", "finish": "Gloss Black", "img": "bgw-vm12-gloss-black.png", "thumb": "bgw-vm12-gloss-black_rim.png"},
+    {"brand": "BGW", "collection": "Vulcan", "finish": "Bronze", "img": "bgw-vulcan-bronze.png", "thumb": "bgw-vulcan-bronze_rim.png"},
+    {"brand": "BGW", "collection": "Vulcan", "finish": "Grey", "img": "bgw-vulcan-grey.png", "thumb": "bgw-vulcan-grey_rim.png"},
+    {"brand": "BGW", "collection": "Vulcan", "finish": "Matt Black", "img": "bgw-vulcan-matt-black.png", "thumb": "bgw-vulcan-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "X-cross", "finish": "Matt Black", "img": "bgw-x-cross-matt-black.png", "thumb": "bgw-x-cross-matt-black_rim.png"},
+    {"brand": "BGW", "collection": "Zurich", "finish": "Hyper Dark", "img": "bgw-zurich-hyper-dark.png", "thumb": "bgw-zurich-hyper-dark_rim.png"},
+    {"brand": "BGW", "collection": "Zurich", "finish": "Matt Black", "img": "bgw-zurich-matt-black.png", "thumb": "bgw-zurich-matt-black_rim.png"},
+    {"brand": "Black Rhino", "collection": "Arches", "finish": "Matt Brushed Gunmetal w/Black Bolts", "img": "black-rhino-arches-matt-brushed-gunmetal-w-black-bolts.png", "thumb": "black-rhino-arches-matt-brushed-gunmetal-w-black-bolts_rim.png"},
+    {"brand": "Black Rhino", "collection": "Arsenal", "finish": "Textured Matt Black", "img": "black-rhino-arsenal-textured-matt-black.png", "thumb": "black-rhino-arsenal-textured-matt-black_rim.png"},
+    {"brand": "Black Rhino", "collection": "Awol", "finish": "Silver w/Machined Face", "img": "black-rhino-awol-silver-w-machined-face.png", "thumb": "black-rhino-awol-silver-w-machined-face_rim.png"},
+    {"brand": "Black Rhino", "collection": "Barrage", "finish": "Desert Sand w/Matt Black Rim Edge", "img": "black-rhino-barrage-desert-sand-w-matt-black-rim-edge.png", "thumb": "black-rhino-barrage-desert-sand-w-matt-black-rim-edge_rim.png"},
+    {"brand": "Black Rhino", "collection": "Barrage", "finish": "Matt White w/Matt Black Lip Edge", "img": "black-rhino-barrage-matt-white-w-matt-black-lip-edge.png", "thumb": "black-rhino-barrage-matt-white-w-matt-black-lip-edge_rim.png"},
+    {"brand": "Black Rhino", "collection": "Glamis", "finish": "Matt Black", "img": "black-rhino-glamis-matt-black.png", "thumb": "black-rhino-glamis-matt-black_rim.png"},
+    {"brand": "Black Rhino", "collection": "Kelso", "finish": "Matt Black w/Black Bolts", "img": "black-rhino-kelso-matt-black-w-black-bolts.png", "thumb": "black-rhino-kelso-matt-black-w-black-bolts_rim.png"},
+    {"brand": "Black Rhino", "collection": "Kruger", "finish": "Gloss Black", "img": "black-rhino-kruger-gloss-black.png", "thumb": "black-rhino-kruger-gloss-black_rim.png"},
+    {"brand": "Black Rhino", "collection": "Primm", "finish": "Candy Red w/Black Bolts", "img": "black-rhino-primm-candy-red-w-black-bolts.png", "thumb": "black-rhino-primm-candy-red-w-black-bolts_rim.png"},
+    {"brand": "Black Rhino", "collection": "Ridge", "finish": "Matt Black", "img": "black-rhino-ridge-matt-black.png", "thumb": "black-rhino-ridge-matt-black_rim.png"},
+    {"brand": "Black Rhino", "collection": "Selkirk", "finish": "Gloss Black w/Milled Spokes", "img": "black-rhino-selkirk-gloss-black-w-milled-spokes.png", "thumb": "black-rhino-selkirk-gloss-black-w-milled-spokes_rim.png"},
+    {"brand": "Black Rhino", "collection": "Wanaka", "finish": "Matt Black", "img": "black-rhino-wanaka-matt-black.png", "thumb": "black-rhino-wanaka-matt-black_rim.png"},
+    {"brand": "Black Rhino", "collection": "Warlord", "finish": "Matt Gunmetal", "img": "black-rhino-warlord-matt-gunmetal.png", "thumb": "black-rhino-warlord-matt-gunmetal_rim.png"},
+    {"brand": "Covert", "collection": "Cv1", "finish": "Matt Black", "img": "covert-cv1-matt-black.png", "thumb": "covert-cv1-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Cv1", "finish": "Titanium w/Brushed Face", "img": "covert-cv1-titanium-w-brushed-face.png", "thumb": "covert-cv1-titanium-w-brushed-face_rim.png"},
+    {"brand": "Covert", "collection": "Cv2", "finish": "Gloss Black", "img": "covert-cv2-gloss-black.png", "thumb": "covert-cv2-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Cv3", "finish": "Gloss Black", "img": "covert-cv3-gloss-black.png", "thumb": "covert-cv3-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Cv4", "finish": "Gloss Black w/Machined Lip", "img": "covert-cv4-gloss-black-w-machined-lip.png", "thumb": "covert-cv4-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "Covert", "collection": "Cv6", "finish": "Matt Black", "img": "covert-cv6-matt-black.png", "thumb": "covert-cv6-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Cv7", "finish": "Gloss Black w/Machined Lip", "img": "covert-cv7-gloss-black-w-machined-lip.png", "thumb": "covert-cv7-gloss-black-w-machined-lip_rim.png"},
+    {"brand": "Covert", "collection": "Cv8", "finish": "Matt Black", "img": "covert-cv8-matt-black.png", "thumb": "covert-cv8-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "RT", "finish": "Bronze w/Black Bead", "img": "covert-rt-bronze-w-black-bead.png", "thumb": "covert-rt-bronze-w-black-bead_rim.png"},
+    {"brand": "Covert", "collection": "RT", "finish": "Matt Black", "img": "covert-rt-matt-black.png", "thumb": "covert-rt-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "RT", "finish": "Matt Black w/Dark Tinted Spokes", "img": "covert-rt-matt-black-w-dark-tinted-spokes.png", "thumb": "covert-rt-matt-black-w-dark-tinted-spokes_rim.png"},
+    {"brand": "Covert", "collection": "Rto5", "finish": "Matt Black", "img": "covert-rto5-matt-black.png", "thumb": "covert-rto5-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rto6", "finish": "Matt Black", "img": "covert-rto6-matt-black.png", "thumb": "covert-rto6-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv1", "finish": "Matt Black", "img": "covert-rv1-matt-black.png", "thumb": "covert-rv1-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv2", "finish": "Gloss Black", "img": "covert-rv2-gloss-black.png", "thumb": "covert-rv2-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv2", "finish": "Matt Black", "img": "covert-rv2-matt-black.png", "thumb": "covert-rv2-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv3", "finish": "Gloss Black", "img": "covert-rv3-gloss-black.png", "thumb": "covert-rv3-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv3", "finish": "Gloss Gunmetal", "img": "covert-rv3-gloss-gunmetal.png", "thumb": "covert-rv3-gloss-gunmetal_rim.png"},
+    {"brand": "Covert", "collection": "Rv3", "finish": "Matt Black", "img": "covert-rv3-matt-black.png", "thumb": "covert-rv3-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv4", "finish": "Gloss Black", "img": "covert-rv4-gloss-black.png", "thumb": "covert-rv4-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv4", "finish": "Matt Black", "img": "covert-rv4-matt-black.png", "thumb": "covert-rv4-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv4", "finish": "Matt Black w/Milled Spoke", "img": "covert-rv4-matt-black-w-milled-spoke.png", "thumb": "covert-rv4-matt-black-w-milled-spoke_rim.png"},
+    {"brand": "Covert", "collection": "Rv4", "finish": "Satin Black w/Machined Face", "img": "covert-rv4-satin-black-w-machined-face.png", "thumb": "covert-rv4-satin-black-w-machined-face_rim.png"},
+    {"brand": "Covert", "collection": "Rv5", "finish": "Gloss Black", "img": "covert-rv5-gloss-black.png", "thumb": "covert-rv5-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv5", "finish": "Gloss Black w/Machined Face & Dark Tint", "img": "covert-rv5-gloss-black-w-machined-face-dark-tint.png", "thumb": "covert-rv5-gloss-black-w-machined-face-dark-tint_rim.png"},
+    {"brand": "Covert", "collection": "Rv5", "finish": "Matt Black", "img": "covert-rv5-matt-black.png", "thumb": "covert-rv5-matt-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv6", "finish": "Gloss Black", "img": "covert-rv6-gloss-black.png", "thumb": "covert-rv6-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv6", "finish": "Gloss Black w/Milled Spokes & Red Tint", "img": "covert-rv6-gloss-black-w-milled-spokes-red-tint.png", "thumb": "covert-rv6-gloss-black-w-milled-spokes-red-tint_rim.png"},
+    {"brand": "Covert", "collection": "Rv6", "finish": "Matt Black w/Machined Undercut", "img": "covert-rv6-matt-black-w-machined-undercut.png", "thumb": "covert-rv6-matt-black-w-machined-undercut_rim.png"},
+    {"brand": "Covert", "collection": "Rv6", "finish": "Matt Black w/Milled Spokes", "img": "covert-rv6-matt-black-w-milled-spokes.png", "thumb": "covert-rv6-matt-black-w-milled-spokes_rim.png"},
+    {"brand": "Covert", "collection": "Rv7", "finish": "Gloss Black", "img": "covert-rv7-gloss-black.png", "thumb": "covert-rv7-gloss-black_rim.png"},
+    {"brand": "Covert", "collection": "Rv7", "finish": "Matt Black w/Gloss Black Lip", "img": "covert-rv7-matt-black-w-gloss-black-lip.png", "thumb": "covert-rv7-matt-black-w-gloss-black-lip_rim.png"},
+    {"brand": "Covert", "collection": "Rv7", "finish": "Matt Dark Gunmetal w/Gloss Black Lip", "img": "covert-rv7-matt-dark-gunmetal-w-gloss-black-lip.png", "thumb": "covert-rv7-matt-dark-gunmetal-w-gloss-black-lip_rim.png"},
+    {"brand": "Covert Forged", "collection": "Cf6", "finish": "Gloss Black", "img": "covert-forged-cf6-gloss-black.png", "thumb": "covert-forged-cf6-gloss-black_rim.png"},
+    {"brand": "Cragar", "collection": "S/s", "finish": "Chrome", "img": "cragar-s-s-chrome.png", "thumb": "cragar-s-s-chrome_rim.png"},
+    {"brand": "Cragar", "collection": "Smoothie", "finish": "Chrome", "img": "cragar-smoothie-chrome.png", "thumb": "cragar-smoothie-chrome_rim.png"},
+    {"brand": "Cragar", "collection": "Streetpro", "finish": "Chrome", "img": "cragar-streetpro-chrome.png", "thumb": "cragar-streetpro-chrome_rim.png"},
+    {"brand": "Double Five", "collection": "Db-1", "finish": "Gloss Black", "img": "double-five-db-1-gloss-black.png", "thumb": "double-five-db-1-gloss-black_rim.png"},
+    {"brand": "Double Five", "collection": "Db-1", "finish": "Matt Black", "img": "double-five-db-1-matt-black.png", "thumb": "double-five-db-1-matt-black_rim.png"},
+    {"brand": "Double Five", "collection": "Db-2", "finish": "Gloss Black", "img": "double-five-db-2-gloss-black.png", "thumb": "double-five-db-2-gloss-black_rim.png"},
+    {"brand": "Double Five", "collection": "Db-2", "finish": "Gloss Black w/Milled Spokes", "img": "double-five-db-2-gloss-black-w-milled-spokes.png", "thumb": "double-five-db-2-gloss-black-w-milled-spokes_rim.png"},
+    {"brand": "Double Five", "collection": "Db-5", "finish": "Gloss Black", "img": "double-five-db-5-gloss-black.png", "thumb": "double-five-db-5-gloss-black_rim.png"},
+    {"brand": "Double Five", "collection": "Db-5", "finish": "Gloss Black w/Milled Spokes", "img": "double-five-db-5-gloss-black-w-milled-spokes.png", "thumb": "double-five-db-5-gloss-black-w-milled-spokes_rim.png"},
+    {"brand": "ION", "collection": "ION 143", "finish": "Gloss Black w/Machined Face", "img": "ion-ion-143-gloss-black-w-machined-face.png", "thumb": "ion-ion-143-gloss-black-w-machined-face_rim.png"},
+    {"brand": "ION", "collection": "ION 143", "finish": "Matt Black", "img": "ion-ion-143-matt-black.png", "thumb": "ion-ion-143-matt-black_rim.png"},
+    {"brand": "ION", "collection": "ION 146", "finish": "Gloss Black", "img": "ion-ion-146-gloss-black.png", "thumb": "ion-ion-146-gloss-black_rim.png"},
+    {"brand": "ION", "collection": "Ion171", "finish": "Polished", "img": "ion-ion171-polished.png", "thumb": "ion-ion171-polished_rim.png"},
+    {"brand": "ION", "collection": "Ion20", "finish": "Full Matt Black", "img": "ion-ion20-full-matt-black.png", "thumb": "ion-ion20-full-matt-black_rim.png"},
+    {"brand": "ION", "collection": "Ion20", "finish": "Gloss Black w/Machined Face", "img": "ion-ion20-gloss-black-w-machined-face.png", "thumb": "ion-ion20-gloss-black-w-machined-face_rim.png"},
+    {"brand": "MAK", "collection": "Deliver", "finish": "Silver", "img": "mak-deliver-silver.png", "thumb": "mak-deliver-silver_rim.png"},
+    {"brand": "MAK", "collection": "King 5", "finish": "Ice Black", "img": "mak-king-5-ice-black.png", "thumb": "mak-king-5-ice-black_rim.png"},
+    {"brand": "MAK", "collection": "Magma", "finish": "Silver", "img": "mak-magma-silver.png", "thumb": "mak-magma-silver_rim.png"},
+    {"brand": "Mayhem", "collection": "Cogent", "finish": "Matt Black", "img": "mayhem-cogent-matt-black.png", "thumb": "mayhem-cogent-matt-black_rim.png"},
+    {"brand": "Mayhem", "collection": "Voyager", "finish": "Matt Black", "img": "mayhem-voyager-matt-black.png", "thumb": "mayhem-voyager-matt-black_rim.png"},
+    {"brand": "Mazzi", "collection": "Laguna", "finish": "Matt Black", "img": "mazzi-laguna-matt-black.png", "thumb": "mazzi-laguna-matt-black_rim.png"},
+    {"brand": "RDR", "collection": "Rd23", "finish": "Gloss Black w/Machined Face & Black Lip", "img": "rdr-rd23-gloss-black-w-machined-face-black-lip.png", "thumb": "rdr-rd23-gloss-black-w-machined-face-black-lip_rim.png"},
+    {"brand": "RDR", "collection": "Rd27", "finish": "Gloss Black w/Machined Face", "img": "rdr-rd27-gloss-black-w-machined-face.png", "thumb": "rdr-rd27-gloss-black-w-machined-face_rim.png"},
+    {"brand": "RDR", "collection": "Rd52", "finish": "Gloss Black", "img": "rdr-rd52-gloss-black.png", "thumb": "rdr-rd52-gloss-black_rim.png"},
+    {"brand": "RDR", "collection": "Rd52", "finish": "Gloss Black w/Machined Face & Milled Spoke", "img": "rdr-rd52-gloss-black-w-machined-face-milled-spoke.png", "thumb": "rdr-rd52-gloss-black-w-machined-face-milled-spoke_rim.png"},
+    {"brand": "RDR", "collection": "Rd53", "finish": "Gloss Black w/Red Milled Spoke Edge", "img": "rdr-rd53-gloss-black-w-red-milled-spoke-edge.png", "thumb": "rdr-rd53-gloss-black-w-red-milled-spoke-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Apollo", "finish": "Matt Black", "img": "roh-alloy-apollo-matt-black.png", "thumb": "roh-alloy-apollo-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Apollo", "finish": "Silver w/Machined Face", "img": "roh-alloy-apollo-silver-w-machined-face.png", "thumb": "roh-alloy-apollo-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Arc", "finish": "Matt Black", "img": "roh-alloy-arc-matt-black.png", "thumb": "roh-alloy-arc-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Arc", "finish": "Silver w/Machined Face", "img": "roh-alloy-arc-silver-w-machined-face.png", "thumb": "roh-alloy-arc-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Assault", "finish": "Matt Black", "img": "roh-alloy-assault-matt-black.png", "thumb": "roh-alloy-assault-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Assault", "finish": "Matt Black w/Machined Face & Dark Tint", "img": "roh-alloy-assault-matt-black-w-machined-face-dark-tint.png", "thumb": "roh-alloy-assault-matt-black-w-machined-face-dark-tint_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Assault", "finish": "Matt Bronze w/Matt Black Lip", "img": "roh-alloy-assault-matt-bronze-w-matt-black-lip.png", "thumb": "roh-alloy-assault-matt-bronze-w-matt-black-lip_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Assault", "finish": "Silver w/Machined Face", "img": "roh-alloy-assault-silver-w-machined-face.png", "thumb": "roh-alloy-assault-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Assault", "finish": "Silver w/Machined Face & Black Lip Edge", "img": "roh-alloy-assault-silver-w-machined-face-black-lip-edge.png", "thumb": "roh-alloy-assault-silver-w-machined-face-black-lip-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Atlas", "finish": "Matt Black", "img": "roh-alloy-atlas-matt-black.png", "thumb": "roh-alloy-atlas-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Atlas", "finish": "Matt Black w/Graphite Rim Edge", "img": "roh-alloy-atlas-matt-black-w-graphite-rim-edge.png", "thumb": "roh-alloy-atlas-matt-black-w-graphite-rim-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Atlas", "finish": "Matt Gunmetal w/Matt Black Rim Edge", "img": "roh-alloy-atlas-matt-gunmetal-w-matt-black-rim-edge.png", "thumb": "roh-alloy-atlas-matt-gunmetal-w-matt-black-rim-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Axe", "finish": "Matt Black", "img": "roh-alloy-axe-matt-black.png", "thumb": "roh-alloy-axe-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Axe", "finish": "Matt Gunmetal w/Matt Black Rim Edge", "img": "roh-alloy-axe-matt-gunmetal-w-matt-black-rim-edge.png", "thumb": "roh-alloy-axe-matt-gunmetal-w-matt-black-rim-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Bl01", "finish": "Matt Black", "img": "roh-alloy-bl01-matt-black.png", "thumb": "roh-alloy-bl01-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Bl01", "finish": "Silver w/Machined Face", "img": "roh-alloy-bl01-silver-w-machined-face.png", "thumb": "roh-alloy-bl01-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Crawler", "finish": "Matt Black", "img": "roh-alloy-crawler-matt-black.png", "thumb": "roh-alloy-crawler-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Crawler", "finish": "Silver w/Machined Face", "img": "roh-alloy-crawler-silver-w-machined-face.png", "thumb": "roh-alloy-crawler-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Hammer", "finish": "Matt Black w/Gloss Lip & Anodised Bolts", "img": "roh-alloy-hammer-matt-black-w-gloss-lip-anodised-bolts.png", "thumb": "roh-alloy-hammer-matt-black-w-gloss-lip-anodised-bolts_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Lotus", "finish": "Matt Black", "img": "roh-alloy-lotus-matt-black.png", "thumb": "roh-alloy-lotus-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Lotus", "finish": "Silver w/Machined Face", "img": "roh-alloy-lotus-silver-w-machined-face.png", "thumb": "roh-alloy-lotus-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "One Twenty", "finish": "Matt Black", "img": "roh-alloy-one-twenty-matt-black.png", "thumb": "roh-alloy-one-twenty-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "One Twenty", "finish": "Silver w/Machined Face", "img": "roh-alloy-one-twenty-silver-w-machined-face.png", "thumb": "roh-alloy-one-twenty-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Onyx", "finish": "Matt Black", "img": "roh-alloy-onyx-matt-black.png", "thumb": "roh-alloy-onyx-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Patriot", "finish": "Matt Black", "img": "roh-alloy-patriot-matt-black.png", "thumb": "roh-alloy-patriot-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid", "finish": "Matt Black", "img": "roh-alloy-raid-matt-black.png", "thumb": "roh-alloy-raid-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid", "finish": "Matt Bronze w/Matt Black Lip", "img": "roh-alloy-raid-matt-bronze-w-matt-black-lip.png", "thumb": "roh-alloy-raid-matt-bronze-w-matt-black-lip_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid", "finish": "Matt Gunmetal w/Matt Black Rim Edge", "img": "roh-alloy-raid-matt-gunmetal-w-matt-black-rim-edge.png", "thumb": "roh-alloy-raid-matt-gunmetal-w-matt-black-rim-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid", "finish": "Silver w/Machined Face", "img": "roh-alloy-raid-silver-w-machined-face.png", "thumb": "roh-alloy-raid-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid 5", "finish": "Matt Black", "img": "roh-alloy-raid-5-matt-black.png", "thumb": "roh-alloy-raid-5-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid 5", "finish": "Matt Bronze w/Matt Black Lip", "img": "roh-alloy-raid-5-matt-bronze-w-matt-black-lip.png", "thumb": "roh-alloy-raid-5-matt-bronze-w-matt-black-lip_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Raid 5", "finish": "Matt Gunmetal w/Matt Black Rim Edge", "img": "roh-alloy-raid-5-matt-gunmetal-w-matt-black-rim-edge.png", "thumb": "roh-alloy-raid-5-matt-gunmetal-w-matt-black-rim-edge_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Rf4", "finish": "Gunmetal w/Machined Face", "img": "roh-alloy-rf4-gunmetal-w-machined-face.png", "thumb": "roh-alloy-rf4-gunmetal-w-machined-face_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Rf4", "finish": "Matt Black", "img": "roh-alloy-rf4-matt-black.png", "thumb": "roh-alloy-rf4-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Rock 6", "finish": "Matt Black", "img": "roh-alloy-rock-6-matt-black.png", "thumb": "roh-alloy-rock-6-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Terrain", "finish": "Matt Black w/Machined Spoke", "img": "roh-alloy-terrain-matt-black-w-machined-spoke.png", "thumb": "roh-alloy-terrain-matt-black-w-machined-spoke_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Torque", "finish": "Matt Black", "img": "roh-alloy-torque-matt-black.png", "thumb": "roh-alloy-torque-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Vapour", "finish": "Matt Black w/Machined Under Cut", "img": "roh-alloy-vapour-matt-black-w-machined-under-cut.png", "thumb": "roh-alloy-vapour-matt-black-w-machined-under-cut_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Zullo", "finish": "Matt Black", "img": "roh-alloy-zullo-matt-black.png", "thumb": "roh-alloy-zullo-matt-black_rim.png"},
+    {"brand": "ROH Alloy", "collection": "Zullo", "finish": "Silver w/Machined Face", "img": "roh-alloy-zullo-silver-w-machined-face.png", "thumb": "roh-alloy-zullo-silver-w-machined-face_rim.png"},
+    {"brand": "ROH Steel", "collection": "Black Trak", "finish": "Matt Black", "img": "roh-steel-black-trak-matt-black.png", "thumb": "roh-steel-black-trak-matt-black_rim.png"},
+    {"brand": "ROH Steel", "collection": "Retro Steel", "finish": "Black", "img": "roh-steel-retro-steel-black.png", "thumb": "roh-steel-retro-steel-black_rim.png"},
+    {"brand": "ROH Steel", "collection": "Trak", "finish": "White", "img": "roh-steel-trak-white.png", "thumb": "roh-steel-trak-white_rim.png"},
+    {"brand": "ROH Steel", "collection": "Trak D", "finish": "Black", "img": "roh-steel-trak-d-black.png", "thumb": "roh-steel-trak-d-black_rim.png"},
+    {"brand": "Ridler", "collection": "R650", "finish": "Chrome", "img": "ridler-r650-chrome.png", "thumb": "ridler-r650-chrome_rim.png"},
+    {"brand": "Ridler", "collection": "R650", "finish": "Grey w/Polished Lip", "img": "ridler-r650-grey-w-polished-lip.png", "thumb": "ridler-r650-grey-w-polished-lip_rim.png"},
+    {"brand": "Ridler", "collection": "R650", "finish": "Matt Black w/Polished Lip", "img": "ridler-r650-matt-black-w-polished-lip.png", "thumb": "ridler-r650-matt-black-w-polished-lip_rim.png"},
+    {"brand": "Ridler", "collection": "R675", "finish": "Matt Black w/Machined Lip", "img": "ridler-r675-matt-black-w-machined-lip.png", "thumb": "ridler-r675-matt-black-w-machined-lip_rim.png"},
+    {"brand": "Ridler", "collection": "R695", "finish": "Chrome", "img": "ridler-r695-chrome.png", "thumb": "ridler-r695-chrome_rim.png"},
+    {"brand": "Ridler", "collection": "R695", "finish": "Grey w/Machined Lip", "img": "ridler-r695-grey-w-machined-lip.png", "thumb": "ridler-r695-grey-w-machined-lip_rim.png"},
+    {"brand": "Ridler", "collection": "R695", "finish": "Matt Black w/Machined Lip", "img": "ridler-r695-matt-black-w-machined-lip.png", "thumb": "ridler-r695-matt-black-w-machined-lip_rim.png"},
+    {"brand": "Roadster", "collection": "T-bird Wire", "finish": "Chrome W/ Stainless Spokes", "img": "roadster-t-bird-wire-chrome-w-stainless-spokes.png", "thumb": "roadster-t-bird-wire-chrome-w-stainless-spokes_rim.png"},
+    {"brand": "Specialtywheel", "collection": "12 Slot", "finish": "Chrome", "img": "specialtywheel-12-slot-chrome.png", "thumb": "specialtywheel-12-slot-chrome_rim.png"},
+    {"brand": "Specialtywheel", "collection": "Artillery", "finish": "Primed", "img": "specialtywheel-artillery-primed.png", "thumb": "specialtywheel-artillery-primed_rim.png"},
+    {"brand": "Specialtywheel", "collection": "Gennie", "finish": "Primed", "img": "specialtywheel-gennie-primed.png", "thumb": "specialtywheel-gennie-primed_rim.png"},
+    {"brand": "Specialtywheel", "collection": "Smoothie", "finish": "Chrome", "img": "specialtywheel-smoothie-chrome.png", "thumb": "specialtywheel-smoothie-chrome_rim.png"},
+    {"brand": "Specialtywheel", "collection": "Smoothie", "finish": "Primed", "img": "specialtywheel-smoothie-primed.png", "thumb": "specialtywheel-smoothie-primed_rim.png"},
+    {"brand": "Touren", "collection": "Tr79", "finish": "Gloss Black", "img": "touren-tr79-gloss-black.png", "thumb": "touren-tr79-gloss-black_rim.png"},
+    {"brand": "Weld", "collection": "Draglite", "finish": "Polished", "img": "weld-draglite-polished.png", "thumb": "weld-draglite-polished_rim.png"}
   ];
+  /*WHEELS_END*/
 
-  let selectedStyle = 'dekagram.png';
+  let selectedStyle = wheelStyles[0].img;
+  // Tyre layers. 'hole' = where the wheel sits inside each tyre image (700px square)
+  const TYRES = {
+    road:  { src: 'tyre_road.png', hole: {"cx": 455.8, "cy": 342.0, "w": 180.9, "h": 448.8} },
+    '4wd': { src: 'tyre_4wd.png',  hole: {"cx": 509.4, "cy": 360.4, "w": 174.9, "h": 421.2} },
+    none:  null
+  };
+  const WHEEL_HOLE = { cx: 350, cy: 350, w: 369.8, h: 430 };   // wheel images are fitted to this
+  function wheelBox(t) {          // wheel layer position as fractions of the wheel box
+    if (!t) return { l: 0, t: 0, w: 1, h: 1 };
+    const sx = t.hole.w / WHEEL_HOLE.w, sy = t.hole.h / WHEEL_HOLE.h;
+    return { l: (t.hole.cx - WHEEL_HOLE.cx * sx) / 700, t: (t.hole.cy - WHEEL_HOLE.cy * sy) / 700, w: sx, h: sy };
+  }
+  let tyreType = 'road';
   const brands = [...new Set(wheelStyles.map(w => w.brand))];
   let selectedBrand = brands[0];
 
@@ -409,6 +723,7 @@
       actionRow.style.display = 'flex';
       brightnessRow.style.display = 'flex';
       angleRow.style.display = 'flex';
+      tyreRow.style.display = 'flex';
       brandRow.style.display = brands.length > 1 ? 'flex' : 'none';
       brightnessSlider.value = 100;
       stagePhoto.style.filter = 'brightness(100%)';
@@ -498,13 +813,19 @@
     w.el.style.top = (w.y - w.size/2) + 'px';
     w.el.style.width = wd + 'px';
     w.el.style.height = w.size + 'px';
-    w.el.querySelector('img').src = w.style;
+    w.el.querySelector('img.wheel-layer').src = w.style;
+    const T = TYRES[tyreType], tl = w.el.querySelector('img.tyre-layer'), wl = w.el.querySelector('img.wheel-layer');
+    tl.style.display = T ? '' : 'none';
+    w.el.querySelector('.wheel-backing').style.display = T ? 'none' : '';
+    if (T) tl.src = T.src;
+    const b = wheelBox(T);
+    Object.assign(wl.style, { position: 'absolute', left: b.l*100 + '%', top: b.t*100 + '%', width: b.w*100 + '%', height: b.h*100 + '%' });
   }
 
   function addWheel(x, y, size) {
     const el = document.createElement('div');
     el.className = 'wheel-item';
-    el.innerHTML = `<div class="wheel-shadow"></div><div class="wheel-backing"></div><img src="${selectedStyle}"><div class="resize-handle"></div><div class="delete-handle">✕</div>`;
+    el.innerHTML = `<div class="wheel-shadow"></div><div class="wheel-backing"></div><img class="wheel-layer" src="${selectedStyle}"><img class="tyre-layer" src="${(TYRES[tyreType] || TYRES.road).src}"><div class="resize-handle"></div><div class="delete-handle">✕</div>`;
     stage.appendChild(el);
     const w = { id: nextId++, el, x, y, size, style: selectedStyle, squash: 1 };
     renderWheel(w);
@@ -661,6 +982,7 @@
     actionRow.style.display = 'none';
     brightnessRow.style.display = 'none';
     angleRow.style.display = 'none';
+    tyreRow.style.display = 'none';
     fileInput.value = '';
   });
 
@@ -682,8 +1004,10 @@
 
     const loaders = placedWheels.map(w => new Promise(res => {
       const img = new Image();
-      img.onload = () => {
-        const cx = w.x, cy = w.y, r = w.size * 0.37, sq = w.squash || 1;
+      const tyre = new Image();
+      let loaded = 0;
+      const ready = () => { if (++loaded < 2) return;
+        const cx = w.x, cy = w.y, r = w.size * 0.3, sq = w.squash || 1;
         const grad = ctx.createRadialGradient(cx, cy - w.size*0.04, r*0.1, cx, cy, r);
         grad.addColorStop(0, '#2b2b2b');
         grad.addColorStop(0.55, '#141414');
@@ -692,10 +1016,14 @@
         ctx.beginPath();
         ctx.ellipse(cx, cy, r * sq, r, 0, 0, Math.PI*2);
         ctx.fill();
-        ctx.drawImage(img, w.x - (w.size*sq)/2, w.y - w.size/2, w.size*sq, w.size);
+        const bx = w.x - (w.size*sq)/2, by = w.y - w.size/2, bw = w.size*sq, bh = w.size, wb = wheelBox(TYRES[tyreType]);
+        ctx.drawImage(img, bx + wb.l*bw, by + wb.t*bh, wb.w*bw, wb.h*bh);
+        if (TYRES[tyreType]) ctx.drawImage(tyre, bx, by, bw, bh);
         res();
       };
-      img.src = w.style;
+      img.onload = ready; tyre.onload = ready;
+      img.onerror = tyre.onerror = () => res();
+      img.src = w.style; tyre.src = (TYRES[tyreType] || TYRES.road).src;
     }));
 
     Promise.all(loaders).then(() => {
