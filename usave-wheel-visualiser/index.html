@@ -679,7 +679,8 @@
     const r = Math.min(1, Math.max(0.2, 0.75 * v));           // how round the sidewall looks
     const sideW = m.side.h * r, kx = sideW / m.side.w;
     const T0 = (m.side.cx - m.side.w / 2) - m.x0;
-    const treadW = T0 * Math.sqrt(1 - r * r) / Math.sqrt(1 - r0 * r0);
+    const TREAD = 0.7;                                          // show 70% of the photo's tread so tyres aren't too bulky
+    const treadW = TREAD * T0 * Math.sqrt(1 - r * r) / Math.sqrt(1 - r0 * r0);
     const W = (treadW + sideW) * s;
     const side = { x: (treadW - (m.side.cx - m.side.w / 2) * kx) * s, y: 0, w: 700 * kx * s, h: H };
     const kb = (treadW + sideW) / ((m.side.cx + m.side.w / 2) - m.x0);
@@ -687,7 +688,9 @@
     const hcx = treadW + (m.hole.cx - (m.side.cx - m.side.w / 2)) * kx, hw = m.hole.w * kx, hh = m.hole.h;
     const wheel = { x: (hcx - WHEEL_HOLE.cx * hw / WHEEL_HOLE.w) * s, y: (m.hole.cy - WHEEL_HOLE.cy * hh / WHEEL_HOLE.h) * s,
                     w: 700 * hw / WHEEL_HOLE.w * s, h: 700 * hh / WHEEL_HOLE.h * s };
-    return { W, H, back, side, wheel };
+    const backAlpha = Math.max(0, Math.min(1, (treadW / T0) / 0.25));   // tread fades out right at the side-on end
+    const clipX = (treadW + sideW / 2) * s;                              // tread layer only shows left of the sidewall centre
+    return { W, H, back, side, wheel, backAlpha, clipX };
   }
   function wheelBox(t) {          // wheel layer position as fractions of the wheel box
     if (!t) return { l: 0, t: 0, w: 1, h: 1 };
@@ -854,7 +857,12 @@
                                 maxWidth: 'none', transform: w.flip ? 'scaleX(-1)' : '' });
     };
     put(wl, L.wheel);
-    if (T) { bl.src = T.src; sl.src = T.side; put(bl, L.back); put(sl, L.side); }
+    if (T) {
+      bl.src = T.src; sl.src = T.side; put(bl, L.back); put(sl, L.side);
+      bl.style.opacity = L.backAlpha;
+      const cut = Math.max(0, (L.back.x + L.back.w) - L.clipX);
+      bl.style.clipPath = `inset(0 ${cut / L.back.w * 100}% 0 0)`;
+    }
   }
 
   function addWheel(x, y, size) {
@@ -1047,7 +1055,11 @@
         ctx.translate(w.x - L.W/2, w.y - L.H/2);
         if (w.flip) { ctx.translate(L.W, 0); ctx.scale(-1, 1); }
         const d = (im, b) => ctx.drawImage(im, b.x, b.y, b.w, b.h);
-        if (T) { d(imgs[1], L.back); d(imgs[0], L.wheel); d(imgs[2], L.side); }
+        if (T) {
+          ctx.save(); ctx.beginPath(); ctx.rect(0, 0, L.clipX, L.H); ctx.clip();
+          ctx.globalAlpha = L.backAlpha; d(imgs[1], L.back); ctx.restore();
+          d(imgs[0], L.wheel); d(imgs[2], L.side);
+        }
         else {
           const r = L.H * 0.3;
           ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(L.W/2, L.H/2, r * (L.W/L.H), r, 0, 0, Math.PI*2); ctx.fill();
