@@ -656,8 +656,8 @@
   // m = measurements in the 700px tyre images. The Angle slider turns the tyre:
   // the sidewall gets rounder and the tread gets thinner, like a real tyre turning to face you.
   const TYRES = {
-    road:  { src: 'tyre_road.png', side: 'tyre_road_side.png', m: {"x0": 7.0, "side": {"cx": 459.2, "cy": 342.0, "w": 234.5, "h": 629.7}, "hole": {"cx": 455.8, "cy": 342.0, "w": 180.9, "h": 448.8}} },
-    '4wd': { src: 'tyre_4wd.png',  side: 'tyre_4wd_side.png',  m: {"x0": 44.0, "side": {"cx": 515.1, "cy": 361.8, "w": 271.3, "h": 663.9}, "hole": {"cx": 509.4, "cy": 360.4, "w": 174.9, "h": 421.2}} },
+    road:  { src: 'tyre_road.png', side: 'tyre_road_side.png', m: {"x0": 7.0, "side": {"cx": 459.2, "cy": 342.0, "w": 234.5, "h": 629.7}, "hole": {"cx": 455.8, "cy": 342.0, "w": 180.9, "h": 448.8}, "sideImg": {"cx": 325.0, "cy": 342.0, "w": 629.7, "h": 629.7, "imgW": 650, "hole": {"cx": 325.0, "cy": 342.0, "w": 478.2, "h": 478.2}}} },
+    '4wd': { src: 'tyre_4wd.png',  side: 'tyre_4wd_side.png',  m: {"x0": 44.0, "side": {"cx": 515.1, "cy": 361.8, "w": 271.3, "h": 663.9}, "hole": {"cx": 509.4, "cy": 360.4, "w": 174.9, "h": 421.2}, "sideImg": {"cx": 342.0, "cy": 361.8, "w": 663.9, "h": 663.9, "imgW": 684, "hole": {"cx": 342.0, "cy": 361.8, "w": 412.0, "h": 412.0}}} },
     none:  null
   };
   const WHEEL_HOLE = { cx: 350, cy: 350, w: 369.8, h: 430 };   // wheel images are fitted to this
@@ -674,11 +674,15 @@
     const TREAD = 0.7;                                          // show 70% of the photo's tread so tyres aren't too bulky
     const treadW = TREAD * T0 * Math.sqrt(1 - r * r) / Math.sqrt(1 - r0 * r0);
     const W = (treadW + sideW) * s;
-    const side = { x: (treadW - (m.side.cx - m.side.w / 2) * kx) * s, y: 0, w: 700 * kx * s, h: H };
+    // sidewall layer: a straight-on photo (sideImg) is only ever squashed, so it stays sharp at every angle
+    const si = m.sideImg || { cx: m.side.cx, cy: m.side.cy, w: m.side.w, h: m.side.h, hole: m.hole };
+    const ks = sideW / si.w, vs = m.side.h / si.h;
+    const side = { x: (treadW - (si.cx - si.w / 2) * ks) * s, y: (m.side.cy - si.cy * vs) * s, w: (si.imgW || 700) * ks * s, h: 700 * vs * s };
     const kb = (treadW + sideW) / ((m.side.cx + m.side.w / 2) - m.x0);
     const back = { x: -m.x0 * kb * s, y: 0, w: 700 * kb * s, h: H };
-    const hcx = treadW + (m.hole.cx - (m.side.cx - m.side.w / 2)) * kx, hw = m.hole.w * kx, hh = m.hole.h;
-    const wheel = { x: (hcx - WHEEL_HOLE.cx * hw / WHEEL_HOLE.w) * s, y: (m.hole.cy - WHEEL_HOLE.cy * hh / WHEEL_HOLE.h) * s,
+    const hcx = treadW + (si.hole.cx - (si.cx - si.w / 2)) * ks, hw = si.hole.w * ks, hh = si.hole.h * vs;
+    const hcy = m.side.cy + (si.hole.cy - si.cy) * vs;
+    const wheel = { x: (hcx - WHEEL_HOLE.cx * hw / WHEEL_HOLE.w) * s, y: (hcy - WHEEL_HOLE.cy * hh / WHEEL_HOLE.h) * s,
                     w: 700 * hw / WHEEL_HOLE.w * s, h: 700 * hh / WHEEL_HOLE.h * s };
     const backAlpha = Math.max(0, Math.min(1, (treadW / T0) / 0.25));   // tread fades out right at the side-on end
     const clipX = (treadW + sideW / 2) * s;                              // tread layer only shows left of the sidewall centre
