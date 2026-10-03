@@ -95,7 +95,9 @@
     position:relative;z-index:2;width:100%;height:100%;object-fit:fill;display:block;pointer-events:none;
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.35));
   }
-  .wheel-item img.tyre-layer{position:absolute;inset:0;z-index:3;filter:none;}
+  .wheel-item img.tyre-layer{position:absolute;z-index:4;}
+  .wheel-item img.tyre-back{position:absolute;z-index:2;}
+  .wheel-item img.wheel-layer{z-index:3;}
   .tyre-row{display:flex;justify-content:center;align-items:center;gap:8px;margin:4px 0 10px;}
   .tyre-row .label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:#5b5850;margin-right:4px;}
   .tyre-btn{border:2px solid #0F0E0D;background:transparent;padding:7px 18px;border-radius:999px;font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;}
@@ -658,13 +660,32 @@
   /*WHEELS_END*/
 
   let selectedStyle = wheelStyles[0].img;
-  // Tyre layers. 'hole' = where the wheel sits inside each tyre image (700px square)
+  // Tyre layers: a full tyre (tread) behind the wheel, and a sidewall layer in front.
+  // m = measurements in the 700px tyre images. The Angle slider turns the tyre:
+  // the sidewall gets rounder and the tread gets thinner, like a real tyre turning to face you.
   const TYRES = {
-    road:  { src: 'tyre_road.png', hole: {"cx": 455.8, "cy": 342.0, "w": 180.9, "h": 448.8} },
-    '4wd': { src: 'tyre_4wd.png',  hole: {"cx": 509.4, "cy": 360.4, "w": 174.9, "h": 421.2} },
+    road:  { src: 'tyre_road.png', side: 'tyre_road_side.png', m: {"x0": 7.0, "side": {"cx": 459.2, "cy": 342.0, "w": 234.5, "h": 629.7}, "hole": {"cx": 455.8, "cy": 342.0, "w": 180.9, "h": 448.8}} },
+    '4wd': { src: 'tyre_4wd.png',  side: 'tyre_4wd_side.png',  m: {"x0": 44.0, "side": {"cx": 515.1, "cy": 361.8, "w": 271.3, "h": 663.9}, "hole": {"cx": 509.4, "cy": 360.4, "w": 174.9, "h": 421.2}} },
     none:  null
   };
   const WHEEL_HOLE = { cx: 350, cy: 350, w: 369.8, h: 430 };   // wheel images are fitted to this
+  function layout(w) {
+    const T = TYRES[tyreType], H = w.size, s = H / 700, v = (w.squash || 1);
+    if (!T) { const W = H * v; return { W, H, wheel: { x: 0, y: 0, w: W, h: H } }; }
+    const m = T.m, r0 = m.side.w / m.side.h;
+    const r = Math.min(1, Math.max(0.2, 0.75 * v));           // how round the sidewall looks
+    const sideW = m.side.h * r, kx = sideW / m.side.w;
+    const T0 = (m.side.cx - m.side.w / 2) - m.x0;
+    const treadW = T0 * Math.sqrt(1 - r * r) / Math.sqrt(1 - r0 * r0);
+    const W = (treadW + sideW) * s;
+    const side = { x: (treadW - (m.side.cx - m.side.w / 2) * kx) * s, y: 0, w: 700 * kx * s, h: H };
+    const kb = (treadW + sideW) / ((m.side.cx + m.side.w / 2) - m.x0);
+    const back = { x: -m.x0 * kb * s, y: 0, w: 700 * kb * s, h: H };
+    const hcx = treadW + (m.hole.cx - (m.side.cx - m.side.w / 2)) * kx, hw = m.hole.w * kx, hh = m.hole.h;
+    const wheel = { x: (hcx - WHEEL_HOLE.cx * hw / WHEEL_HOLE.w) * s, y: (m.hole.cy - WHEEL_HOLE.cy * hh / WHEEL_HOLE.h) * s,
+                    w: 700 * hw / WHEEL_HOLE.w * s, h: 700 * hh / WHEEL_HOLE.h * s };
+    return { W, H, back, side, wheel };
+  }
   function wheelBox(t) {          // wheel layer position as fractions of the wheel box
     if (!t) return { l: 0, t: 0, w: 1, h: 1 };
     const sx = t.hole.w / WHEEL_HOLE.w, sy = t.hole.h / WHEEL_HOLE.h;
@@ -815,27 +836,28 @@
   }
 
   function renderWheel(w) {
-    const wd = w.size * (w.squash || 1);
-    w.el.style.left = (w.x - wd/2) + 'px';
-    w.el.style.top = (w.y - w.size/2) + 'px';
-    w.el.style.width = wd + 'px';
-    w.el.style.height = w.size + 'px';
-    w.el.querySelector('img.wheel-layer').src = w.style;
-    const T = TYRES[tyreType], tl = w.el.querySelector('img.tyre-layer'), wl = w.el.querySelector('img.wheel-layer');
-    tl.style.display = T ? '' : 'none';
+    const L = layout(w), T = TYRES[tyreType];
+    w.el.style.left = (w.x - L.W/2) + 'px';
+    w.el.style.top = (w.y - L.H/2) + 'px';
+    w.el.style.width = L.W + 'px';
+    w.el.style.height = L.H + 'px';
+    const wl = w.el.querySelector('img.wheel-layer'), bl = w.el.querySelector('img.tyre-back'), sl = w.el.querySelector('img.tyre-layer');
+    wl.src = w.style;
+    bl.style.display = sl.style.display = T ? '' : 'none';
     w.el.querySelector('.wheel-backing').style.display = T ? 'none' : '';
-    if (T) tl.src = T.src;
-    const b = wheelBox(T);
-    Object.assign(wl.style, { position: 'absolute', left: b.l*100 + '%', top: b.t*100 + '%', width: b.w*100 + '%', height: b.h*100 + '%' });
-    // flip mirrors the wheel + tyre together (wheel layer is mirrored inside the box too)
-    wl.style.transform = tl.style.transform = '';
-    if (w.flip) { tl.style.transform = 'scaleX(-1)'; wl.style.left = (1 - b.l - b.w)*100 + '%'; wl.style.transform = 'scaleX(-1)'; }
+    const put = (el, b) => {
+      const x = w.flip ? L.W - b.x - b.w : b.x;
+      Object.assign(el.style, { position: 'absolute', left: x + 'px', top: b.y + 'px', width: b.w + 'px', height: b.h + 'px',
+                                maxWidth: 'none', transform: w.flip ? 'scaleX(-1)' : '' });
+    };
+    put(wl, L.wheel);
+    if (T) { bl.src = T.src; sl.src = T.side; put(bl, L.back); put(sl, L.side); }
   }
 
   function addWheel(x, y, size) {
     const el = document.createElement('div');
     el.className = 'wheel-item';
-    el.innerHTML = `<div class="wheel-shadow"></div><div class="wheel-backing"></div><img class="wheel-layer" src="${selectedStyle}"><img class="tyre-layer" src="${(TYRES[tyreType] || TYRES.road).src}"><div class="resize-handle"></div><div class="delete-handle">✕</div>`;
+    el.innerHTML = `<div class="wheel-shadow"></div><div class="wheel-backing"></div><img class="tyre-back" src="${(TYRES[tyreType] || TYRES.road).src}"><img class="wheel-layer" src="${selectedStyle}"><img class="tyre-layer" src="${(TYRES[tyreType] || TYRES.road).side}"><div class="resize-handle"></div><div class="delete-handle">✕</div>`;
     stage.appendChild(el);
     const w = { id: nextId++, el, x, y, size, style: selectedStyle, squash: 1 };
     renderWheel(w);
@@ -1013,30 +1035,25 @@
     ctx.restore();
 
     const loaders = placedWheels.map(w => new Promise(res => {
-      const img = new Image();
-      const tyre = new Image();
+      const T = TYRES[tyreType], L = layout(w);
+      const srcs = T ? [w.style, T.src, T.side] : [w.style];
+      const imgs = srcs.map(() => new Image());
       let loaded = 0;
-      const ready = () => { if (++loaded < 2) return;
-        const cx = w.x, cy = w.y, r = w.size * 0.3, sq = w.squash || 1;
-        const grad = ctx.createRadialGradient(cx, cy - w.size*0.04, r*0.1, cx, cy, r);
-        grad.addColorStop(0, '#2b2b2b');
-        grad.addColorStop(0.55, '#141414');
-        grad.addColorStop(1, '#050505');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.ellipse(cx, cy, r * sq, r, 0, 0, Math.PI*2);
-        ctx.fill();
-        const bx = w.x - (w.size*sq)/2, by = w.y - w.size/2, bw = w.size*sq, bh = w.size, wb = wheelBox(TYRES[tyreType]);
+      const ready = () => { if (++loaded < imgs.length) return;
         ctx.save();
-        if (w.flip) { ctx.translate(w.x, 0); ctx.scale(-1, 1); ctx.translate(-w.x, 0); }
-        ctx.drawImage(img, bx + wb.l*bw, by + wb.t*bh, wb.w*bw, wb.h*bh);
-        if (TYRES[tyreType]) ctx.drawImage(tyre, bx, by, bw, bh);
+        ctx.translate(w.x - L.W/2, w.y - L.H/2);
+        if (w.flip) { ctx.translate(L.W, 0); ctx.scale(-1, 1); }
+        const d = (im, b) => ctx.drawImage(im, b.x, b.y, b.w, b.h);
+        if (T) { d(imgs[1], L.back); d(imgs[0], L.wheel); d(imgs[2], L.side); }
+        else {
+          const r = L.H * 0.3;
+          ctx.fillStyle = '#111'; ctx.beginPath(); ctx.ellipse(L.W/2, L.H/2, r * (L.W/L.H), r, 0, 0, Math.PI*2); ctx.fill();
+          d(imgs[0], L.wheel);
+        }
         ctx.restore();
         res();
       };
-      img.onload = ready; tyre.onload = ready;
-      img.onerror = tyre.onerror = () => res();
-      img.src = w.style; tyre.src = (TYRES[tyreType] || TYRES.road).src;
+      imgs.forEach((im, i) => { im.onload = ready; im.onerror = ready; im.src = srcs[i]; });
     }));
 
     Promise.all(loaders).then(() => {
